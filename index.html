@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+        color: rgba(255, 255, 255, 0.87);
+        background-color: lightpink;
+    }
+
+    #app {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    </style>
+    <title>EG Game</title>
+</head>
+
+<body>
+    <div id="app">
+        <div id="game"></div>
+    </div>
+    <!-- "phaser": "//cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.esm.min.js" -->
+    <script type="importmap">
+        {
+            "imports": {
+                "phaser": "./phaser.esm.min.js"
+            }
+        }
+    </script>
+    <script type="module" src="./main.js"></script>
+</body>
+
+</html>
