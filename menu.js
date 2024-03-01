@@ -33,7 +33,7 @@ export class MainMenu extends Scene
             let obj = this.add.image(x, y, minigames[i] + "_logo");
             obj.setInteractive();
             obj.on("pointerdown", function (pointer) {
-                this.game.scene.start(minigames[i]);    
+                this.scene.start(minigames[i]);
             }, this);
         }
     }
