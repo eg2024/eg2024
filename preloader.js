@@ -31,8 +31,10 @@ export class Preloader extends Scene
 
             // Gym assets
             "gym_logo": "gym_logo.png",
-            "gym_erik_up": "gym_erik_up.png",
-            "gym_erik_down": "gym_erik_down.png",
+            "gym_player_up": "gym_erik_up.png",
+            "gym_player_down": "gym_erik_down.png",
+            "gym_buddy_up": "gym_erik_up.png",
+            "gym_buddy_down": "gym_erik_down.png",
 
             // Template level assets
             "template_logo": "template_logo.png",

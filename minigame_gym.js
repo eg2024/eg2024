@@ -1,6 +1,9 @@
 import { Scene,  } from "phaser";
 
 
+const RED = 0x80000, BLUE = 0x000080, GREY = 0x808080, BLACK = 0x000000;
+const GOOD = 0x00FF00, BAD = 0xFF0000;
+
 const TARGETS = [
     [[0, 2.0],
      [0.25, 1.0], [0.25, 1.0],
@@ -21,15 +24,34 @@ const TARGETS = [
     ],
 ];
 
-
 function makeRecord(data) {
     let record = [];
     let x = data[0][1];
     for (let i=1; i<data.length; i++) {
-        record.push([x, x+data[i][0]]);
+        record.push([x, x+data[i][0], BLUE]);
         x += data[i][1];
     }
     return record;
+}
+
+function isUp(record, t) {
+    for (let i=0; i<record.length; i++)
+        if (t >= record[i][0] && t <= record[i][1])
+            return true;
+    return false;
+}
+
+function matchBeat(record, beat) {
+    // Note: allow beats to match more than once.
+    const [x1, x2, b_color] = beat;
+    const delta = 0.1;  // Tolerance
+    for (let i=0; i<record.length; i++) {
+        let [a1, a2, color] = record[i];
+        if ((Math.abs(a1-x1) < delta) && (Math.abs(a2-x2) < delta)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 
@@ -64,6 +86,9 @@ export class Game extends Scene
             },
         });
 
+        this.player = this.add.sprite(width*3/4, height*3/5, "gym_player_down");
+        this.buddy = this.add.sprite(width*1/4, height*3/5, "gym_buddy_down");
+
         // Set background
         this.cameras.main.setBackgroundColor(0xffffff);
 
@@ -75,31 +100,32 @@ export class Game extends Scene
         // Add score text.
         let score = 0;
         let text = this.add.text(
-            width/2, 40,
+            width/2, 60,
             "" + score, {
             font: "65px Arial",
-            fill: "#ff0044",
+            fill: "#440080",
             align: "center"
         });
         text.setOrigin(0.5, 0.5);
 
 
-        // Add erik
-        let erik = this.add.sprite(width/2, height/2, "gym_erik_down");
-        erik.setInteractive();
-        erik.on("pointerdown", function (pointer) {
-            erik.setTexture("gym_erik_up");
-
-            this.record.push([this.clock2music(this.timer.elapsed), 0]);
-            score += 1;
-            text.setText("" + score);
+        this.input.on("pointerdown", function (pointer) {
+            this.player.setTexture("gym_player_up");
+            this.record.push([this.clock2music(this.timer.elapsed), 0, GREY]);
         }, this);
 
-        erik.on("pointerup", function (pointer) {
-            erik.setTexture("gym_erik_down");
-
+        this.input.on("pointerup", function (pointer) {
+            this.player.setTexture("gym_player_down");
             if(this.record.length) {
-                this.record[this.record.length-1][1] = this.clock2music(this.timer.elapsed);
+                let beat = this.record[this.record.length-1];
+                beat[1] = Math.max(beat[0]+0.25, this.clock2music(this.timer.elapsed));
+                if (matchBeat(this.target, beat)) {
+                    beat[2] = GOOD;
+                    score += 1;
+                    text.setText("" + score);
+                } else {
+                    beat[2] = BAD;
+                }
             }
         }, this);
 
@@ -109,7 +135,7 @@ export class Game extends Scene
     }
 
     update(time, delta) {
-        let y = 100;
+        let y = 150;
         let graphics = this.graphics;
         graphics.clear();
 
@@ -118,14 +144,11 @@ export class Game extends Scene
         const max_t = this.clock2music(this.timer.delay);
         const t = this.clock2music(this.timer.elapsed);
         const r = 10;
-        const red = 0x880000, black = 0x000000;
 
-
-        graphics.fillStyle(red);
         this.drawRecord(graphics, this.target, y+2*r, t, max_t, width, r);
         this.drawRecord(graphics, this.record, y+6*r, t, max_t, width, r);
 
-        graphics.fillStyle(black);
+        graphics.fillStyle(BLACK);
 
         // H-lines
         graphics.fillRect(0, y+0*r, width, 2);
@@ -135,26 +158,32 @@ export class Game extends Scene
         // V-lines
         graphics.fillRect(0, y, 2, 8*r);
         graphics.fillRect(width-2, y, 2, 8*r);
-        graphics.fillStyle(black, 0.2);
-        for (let i = 1; i<max_t; i++) {
+        graphics.fillStyle(BLACK, 0.2);
+        for (let i=1; i<max_t; i++) {
             graphics.fillRect(i/max_t * width, y, 2, 8*r);
         }
-
-        graphics.fillStyle(red, 1.0);
+        graphics.fillStyle(RED, 1.0);
         graphics.fillRect(t/max_t * width, y, 2, 8*r);
+
+        if (isUp(this.target, t)) {
+            this.buddy.setTexture("gym_buddy_up");
+        } else {
+            this.buddy.setTexture("gym_buddy_down"); 
+        }
+
     }
 
     drawRecord(graphics, record, y, t, max_t, width, r) {
         for (let i=0; i!=record.length; i++) {
-            let [x1, x2] = record[i];
+            let [x1, x2, color] = record[i];
             if(x2 == 0) { x2 = t; }
             x1 = x1/max_t * width;
             x2 = x2/max_t * width;
 
+            graphics.fillStyle(color);
             graphics.fillEllipse(x1, y, 4, 2*r);
             graphics.fillRect(x1, y-r, x2-x1, 2*r);
             graphics.fillEllipse(x2, y, 4, 2*r);
         }
-
     }
 }
