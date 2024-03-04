@@ -134,7 +134,7 @@ export class Game extends Scene
 
     }
 
-    update(time, delta) {
+    update() {
         let y = 150;
         let graphics = this.graphics;
         graphics.clear();
