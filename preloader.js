@@ -36,6 +36,9 @@ export class Preloader extends Scene
             "gym_buddy_up": "gym_erik_up.png",
             "gym_buddy_down": "gym_erik_down.png",
 
+            // Knit assets
+            "knit_logo": "knit_logo.png",
+
             // Template level assets
             "template_logo": "template_logo.png",
         }
