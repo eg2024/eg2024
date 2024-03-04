@@ -18,6 +18,11 @@ const config = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
+    fps: {
+        // Lets not waste mobile battery.
+        target: 30,
+        limit: 30,
+    },
     audio: {disableWebAudio: true},
     scene: [
         Preloader,
