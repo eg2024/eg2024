@@ -46,6 +46,6 @@ export class Preloader extends Scene
     }
 
     create() {
-        this.scene.start("menu");
+        this.scene.start(location.hash.substr(1) || "menu");
     }
 }
