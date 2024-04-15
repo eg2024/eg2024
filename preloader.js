@@ -28,6 +28,15 @@ export class Preloader extends Scene
             // Main menu assets
             "main_logo": "main_logo.png",
             "back": "back.png",
+            "heart_full": "heart_full.png",
+            "heart_empty": "heart_empty2.png",
+
+            // Snatch
+            "snatch_good0": "snatch_berry.png",
+            "snatch_good1": "snatch_candy1.png",
+            "snatch_bad0": "snatch_pill_60px.png",
+            "snatch_bad1": "snatch_bluepill_70x42.png",
+            "snatch_bad2": "snatch_earring1.png",
 
             // Gym assets
             "gym_logo": "gym_logo.png",

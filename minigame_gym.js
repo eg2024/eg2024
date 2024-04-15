@@ -71,6 +71,8 @@ export class Game extends Scene
     }
 
     create() {
+        window.scene = this;
+
         const width = this.game.config.width;
         const height = this.game.config.height;
 
@@ -170,7 +172,6 @@ export class Game extends Scene
         } else {
             this.buddy.setTexture("gym_buddy_down"); 
         }
-
     }
 
     drawRecord(graphics, record, y, t, max_t, width, r) {
