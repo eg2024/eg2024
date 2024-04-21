@@ -16,7 +16,7 @@ export class MainMenu extends Scene
         this.add.image(width/2, logo_size/2, "main_logo");
 
         // Render buttons for minigames in a 2x2 grid.
-        let minigames = ["gym", "knit", "snatch", "template"];
+        let minigames = ["gym", "sorting", "snatch", "puzzle"];
 
         const ncols = 2, nrows = 2, size = 145, space = 10;
         const cx = width/2, cy = logo_size + (height - logo_size)/2;

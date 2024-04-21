@@ -8,6 +8,8 @@ import { Game as template } from "./minigame_template.js";
 import { Game as gym  } from "./minigame_gym.js";
 import { Game as knit } from "./minigame_knit.js";
 import { Game as snatch } from "./minigame_snatch.js";
+import { Game as puzzle } from "./minigame_puzzle.js";
+import { Game as sorting } from "./minigame_sorting.js";
 
 const config = {
     type: Phaser.AUTO,
@@ -39,6 +41,8 @@ const config = {
         gym,
         knit,
         snatch,
+        sorting,
+        puzzle,
     ]
 };
 

@@ -32,6 +32,7 @@ export class Preloader extends Scene
             "heart_empty": "heart_empty2.png",
 
             // Snatch
+            "snatch_logo": "snatch_logo.png",
             "snatch_good0": "snatch_berry.png",
             "snatch_good1": "snatch_candy1.png",
             "snatch_bad0": "snatch_pill_60px.png",
@@ -44,6 +45,12 @@ export class Preloader extends Scene
             "gym_player_down": "gym_erik_down.png",
             "gym_buddy_up": "gym_erik_up.png",
             "gym_buddy_down": "gym_erik_down.png",
+
+            // Puzzle assets
+            "puzzle_logo": "puzzle_logo.png",
+
+            // Sorting assets
+            "sorting_logo": "sorting_logo.png",
 
             // Knit assets
             "knit_logo": "knit_logo.png",
