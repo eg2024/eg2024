@@ -20,12 +20,21 @@ export class Game extends Scene
         back.setInteractive();
         back.on("pointerdown", function (p) { this.scene.start("menu"); }, this);
 
-        // Add text in center.
-        let text = this.add.text(width/2, height/2, "TODO(puzzle)", {
-            font: "65px Arial",
-            fill: "#ff0044",
-            align: "center",
-        });
-        text.setOrigin(0.5, 0.5);
+
+        for (let i=0; i<12; i++) {
+            let item = this.add.sprite(0, 0, "puzzle_a" + i);
+            item.setInteractive({
+                draggable: true,
+                pixelPerfect: true,
+                alphaTolerance: 1,
+            });
+            item.setPosition(150, 150);
+            
+            item.on('drag', function(pointer, dragX, dragY){
+                item.setPosition(dragX, dragY);
+            }, this);
+            item.on('dragend', function(pointer, dragX, dragY, dropped){
+            }, this);
+        }
     }
 }

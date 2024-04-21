@@ -48,6 +48,19 @@ export class Preloader extends Scene
 
             // Puzzle assets
             "puzzle_logo": "puzzle_logo.png",
+            "puzzle_img1": "puzzle_img1.png",
+            "puzzle_a0": "puzzle1/piece0.png",
+            "puzzle_a1": "puzzle1/piece1.png",
+            "puzzle_a2": "puzzle1/piece2.png",
+            "puzzle_a3": "puzzle1/piece3.png",
+            "puzzle_a4": "puzzle1/piece4.png",
+            "puzzle_a5": "puzzle1/piece5.png",
+            "puzzle_a6": "puzzle1/piece6.png",
+            "puzzle_a7": "puzzle1/piece7.png",
+            "puzzle_a8": "puzzle1/piece8.png",
+            "puzzle_a9": "puzzle1/piece9.png",
+            "puzzle_a10": "puzzle1/piece10.png",
+            "puzzle_a11": "puzzle1/piece11.png",
 
             // Sorting assets
             "sorting_logo": "sorting_logo.png",
