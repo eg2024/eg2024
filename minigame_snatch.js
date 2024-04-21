@@ -41,7 +41,7 @@ export class Game extends Scene
         
         this.items = [];
         for (let n=0; n!=3; n++) {
-            let item = this.add.sprite(0, 0, "snatch_candy0");
+            let item = this.add.sprite(0, 0, "snatch_good0");
             item.setInteractive();
             item.on('pointerdown',  pointer => this.clickItem(item));
             this.resetItem(item);
