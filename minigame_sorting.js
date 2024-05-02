@@ -1,5 +1,20 @@
 import { Scene } from "phaser";
 
+function shuffleArray(array) {
+    let currentIndex = array.length;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+      // Pick a remaining element...
+      let randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+}
+
 export class Game extends Scene
 {
     constructor() {
@@ -30,6 +45,17 @@ export class Game extends Scene
         });
         text.setOrigin(0.5, 0.5);
 
+        // Add times.
+        this.timer = this.time.addEvent({ delay: 30*1000 });
+        this.timer_text = this.add.text(
+            width/5, 60,
+            this.timer.getRemainingSeconds().toFixed(1), {
+            font: "30px Arial",
+            fill: "#440080",
+            align: "center"
+        });
+        this.timer_text.setOrigin(0.5, 0.5);
+
         // Areas to drop items.
         // https://labs.phaser.io/view.html?src=src/input/zones/sprite%20drop%20zone.js
         this.zones = [];
@@ -39,29 +65,38 @@ export class Game extends Scene
             ["snatch_bad2",],
             ["snatch_good0", "snatch_good0"],
         ];
+        zones.push(this.add.image(0, 0, "sorting_wardrobe"));
+        zones.push(this.add.image(0, 0, "sorting_wardrobe"));
+        zones.push(this.add.image(0, 0, "sorting_freezerbox"));
+
         let y = height - 100 - 5;
-        zones.push(this.add.image(5, y, "sorting_wardrobe"));
-        zones.push(this.add.image(10+100, y, "sorting_wardrobe"));
-        zones.push(this.add.image(15+200, y, "sorting_freezerbox"));
+        let x = [5, 10+100, 15+200];
+        shuffleArray(x);
         for (let i=0; i!=zones.length; i++) {
+            zones[i].x = x[i];
+            zones[i].y = y;
             zones[i].zone_index = i;
             zones[i].setInteractive({dropZone: true});
             zones[i].setOrigin(0, 0);
         }
 
         // Item to sort.
-        const item = this.add.sprite(0, 0, "snatch_good0");
-        item.setInteractive({
-            draggable: true,
-            pixelPerfect: true,
-        });
+        this.item = this.add.sprite(0, 0, "snatch_good0");
+        const item = this.item;
+        item.setInteractive({draggable: true});
 
         const reset_item = () => {
-            item.x = width/2;
-            item.y = height/2;
-            item.zone_index = Math.floor(Math.random() * zones.length);
-            const tex_idx = Math.floor(Math.random() * zone_objects[item.zone_index].length);
-            item.setTexture(zone_objects[item.zone_index][tex_idx]);
+            if (this.timer.getRemainingSeconds() > 0) {
+                item.sx = width/4 + 2*width/4*Math.random();
+                item.sy = height/2;
+                item.x = item.sx;
+                item.y = item.sy;
+                item.zone_index = Math.floor(Math.random() * zones.length);
+                const tex_idx = Math.floor(Math.random() * zone_objects[item.zone_index].length);
+                item.setTexture(zone_objects[item.zone_index][tex_idx]);
+            } else {
+                item.input.enabled = false;
+            }
         };
 
         reset_item();
@@ -83,8 +118,11 @@ export class Game extends Scene
             if (gameObject.zone_index == zone.zone_index) {
                 score += 1;
                 text.setText("" + score);
+                reset_item();
+            } else {
+                item.x = item.sx;
+                item.y = item.sy;
             }
-            reset_item();
             zone.clearTint();
         });
 
@@ -92,5 +130,15 @@ export class Game extends Scene
             gameObject.x = dragX;
             gameObject.y = dragY;
         });
+        item.on('dragend', function(pointer, dragX, dragY, dropped){
+            if (!dropped) {
+                item.x = item.sx;
+                item.y = item.sy;
+            }
+        });
+    }
+
+    update() {
+        this.timer_text.text = this.timer.getRemainingSeconds().toFixed(1) + "s";
     }
 }
