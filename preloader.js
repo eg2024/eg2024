@@ -64,6 +64,8 @@ export class Preloader extends Scene
 
             // Sorting assets
             "sorting_logo": "sorting_logo.png",
+            "sorting_freezerbox": "sorting_freezerbox.png",
+            "sorting_wardrobe": "sorting_wardrobe.png",
 
             // Knit assets
             "knit_logo": "knit_logo.png",
