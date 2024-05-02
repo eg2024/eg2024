@@ -48,6 +48,7 @@ export class Preloader extends Scene
 
             // Puzzle assets
             "puzzle_logo": "puzzle_logo.png",
+            "puzzle_img0": "puzzle_erik0.png",
             "puzzle_img1": "puzzle_img1.png",
             "puzzle_a0": "puzzle_pieces/piece0.png",
             "puzzle_a1": "puzzle_pieces/piece1.png",
