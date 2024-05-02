@@ -47,3 +47,4 @@ const config = {
 };
 
 window.game = new Phaser.Game(config);
+window.Phaser = Phaser;
