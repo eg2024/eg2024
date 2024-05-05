@@ -11,14 +11,14 @@ export class MainMenu extends Scene
 
         const width = this.game.config.width;
         const height = this.game.config.height;
-        const logo_size = 250;
+        const logo_size = 200;
 
         this.add.image(width/2, logo_size/2, "main_logo");
 
         // Render buttons for minigames in a 2x2 grid.
-        let minigames = ["gym", "sorting", "snatch", "puzzle"];
+        let minigames = ["gym", "sorting", "snatch", "puzzle", "hike"];
 
-        const ncols = 2, nrows = 2, size = 145, space = 10;
+        const ncols = 2, nrows = 3, size = 145, space = 5;
         const cx = width/2, cy = logo_size + (height - logo_size)/2;
         const sx = cx - (ncols*size + (ncols-1)*space)/2 + size/2;
         const sy = cy - (nrows*size + (nrows-1)*space)/2 + size/2;

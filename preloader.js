@@ -68,8 +68,16 @@ export class Preloader extends Scene
             "sorting_freezerbox": "sorting_freezerbox.png",
             "sorting_wardrobe": "sorting_wardrobe.png",
 
-            // Knit assets
-            "knit_logo": "knit_logo.png",
+            // Hike assets
+            "hike_logo": "hike_sprite1.png",
+            "hike_background": "hike_background.webp",
+            "hike_player": "hike_sprite1.png",
+            "hike_dino": "hike_dino.png",
+            "hike_treestump": "hike_treestump.png",
+            "hike_rock": "hike_rock.png",
+            "hike_tree": "hike_tree.png",
+            "hike_funicular": "hike_funicular.png",
+            "hike_pterodactyl": "hike_pterodactyl.png",
 
             // Template level assets
             "template_logo": "template_logo.png",
