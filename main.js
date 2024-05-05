@@ -53,8 +53,8 @@ class Preloader extends Phaser.Scene
             "gym_background": "gym_background.png",
             "gym_player_up": "gym_erik_up.png",
             "gym_player_down": "gym_erik_down.png",
-            "gym_buddy_up": "gym_erik_up.png",
-            "gym_buddy_down": "gym_erik_down.png",
+            "gym_buddy_up": "gym_k_up.png",
+            "gym_buddy_down": "gym_k_down.png",
 
             // Puzzle assets
             "puzzle_logo": "puzzle_logo.png",
