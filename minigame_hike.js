@@ -294,8 +294,7 @@ export class Game extends Scene {
     checkGameOver() {
         // Game over when all players are inactive
         if (this.players.every(player => !player.active)) {
-            this.gameOver = true;
-            this.displayGameOver();
+            this.gameover();
         }
     }
 
