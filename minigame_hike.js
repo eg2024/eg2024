@@ -68,7 +68,9 @@ export class Game extends Scene {
         this.jumpSpeed = -10; // Constant speed of rising
         this.playerInitialY = [klara.y, gabca.y, erik.y];
 
-        this.speedDifficulty = 0.5; // set to 0.5 for easy, to 1 for normal, to 2 for super hard
+        // set to 0.5 for easy, to 1 for normal, to 2 for super hard.
+        // this changes dynamically as the game progresses.
+        this.speedDifficulty = 0.5;
 
         // Dinosaur group
         this.dinos = this.add.group();
@@ -89,7 +91,9 @@ export class Game extends Scene {
                 if (!this.gameOver) {
                     this.timeTicks += 1;
                     this.score = this.timeTicks / 20;
-                    let visible_score = Math.floor(this.score) * 100;
+                    // about 10 meters per second. a decent run will be about 1000m which is decent hike
+                    // an elite player might get reach a score of mount everest
+                    let visible_score = 10 * Math.floor(this.score);
                     this.scoreText.setText(visible_score + "m");
 
                     this.updateJump();
@@ -129,31 +133,32 @@ export class Game extends Scene {
     }
 
     // Modify difficulty based on score
-    // It should start at 0.5 and go up to 1 at about a score of 30 and then go up to about 2 by score 300
+    // It should start at 0.5 and go up to 1 at about a score of 50 and then go up to about 2 by score 400
     adjustDifficulty() {
         if (this.score < 50)
             this.speedDifficulty = this.lerp(0.5, 1, this.score/50);
         else if (this.score < 100)
             this.speedDifficulty = 1;
         else if (this.score > 100)
-            this.speedDifficulty = this.lerp(1, 2, (this.score-100)/200);
+            this.speedDifficulty = this.lerp(1, 2, (this.score-100)/300);
     }
 
     applyDayNightCycle() {
         // Apply night tint when game has gone on long enough
-        if (this.score > 100) {
-            // The value below oscillates between 0.5 and 1
-            let darkness = (this.roundedSquareWave(this.timeTicks / 4000 * 3.14 * 2)+1)/4.0 + 0.5;
-            let grn = Math.round(this.lerp(0xff, 0x55, darkness));
-            let blu = Math.round(this.lerp(0xff, 0x44, darkness));
-            let red = Math.round(this.lerp(0xff, 0x33, darkness));
+        //if (this.score > 100)
+        {
+            // The value below oscillates between 0 and 1
+            let darkness = (this.roundedSquareWave(this.timeTicks / 8000 * Math.PI * 2)+1)/2;
+            let grn = Math.min(0xff, Math.round(this.lerp(0x55, 0xff, darkness + 0.1)));
+            let blu = Math.min(0xff, Math.round(this.lerp(0x44, 0xff, darkness + 0.1)));
+            let red = Math.min(0xff, Math.round(this.lerp(0x33, 0xff, darkness + 0.1)));
             let colormask = grn + blu*256 + red*256*256;
             this.backgroundImage.setTint(colormask);
         }
     }
 
     // oscillates between -1 and 1 but is more square than a sine wave.
-    // starts at 0 and is increasing. has a period of 2pi.
+    // has a period of 2pi.
     roundedSquareWave(x) {
         return Math.atan(Math.sin(x)*10)*2/Math.PI;
     }
@@ -310,11 +315,11 @@ export class Game extends Scene {
         if (this.gameOver) return;  // This can be called multiple times before scene is paused.
         this.gameOver = true;
 
-        let visible_score = Math.floor(this.score) * 100;
+        let visible_score = Math.floor(this.score) * 10;
 
         this.scene.launch("gameover", {
             "minigame": this,
-            "text": "You helped Erik and Gabca travel " + visible_score  + "m.",
+            "text": "You helped the family hike " + visible_score  + "m.",
         });
         this.scene.pause();
     }
