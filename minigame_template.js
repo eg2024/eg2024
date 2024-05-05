@@ -7,6 +7,10 @@ export class Game extends Scene
         super("template");
     }
 
+    init(data) {
+        this.data = data;
+    }
+
     create() {
         // Check examples in https://labs.phaser.io/
         const width = this.game.config.width;

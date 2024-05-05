@@ -5,6 +5,10 @@ export class Game extends Scene {
         super("hike");
     }
 
+    init(data) {
+        this.data = data;
+    }
+
     create() {
         const width = this.game.config.width;
         const height = this.game.config.height;
@@ -24,7 +28,7 @@ export class Game extends Scene {
         // Score text
         this.score = 0;
         this.scoreText = this.add.text(width / 2, 80, this.score.toString(), {
-            font: "80px Arial",
+            font: "60px Arial",
             fill: "#ffffff",
             align: "center",
         }).setOrigin(0.5, 0.5);
@@ -64,7 +68,7 @@ export class Game extends Scene {
         this.jumpSpeed = -10; // Constant speed of rising
         this.playerInitialY = [klara.y, gabca.y, erik.y];
 
-        this.speedDifficulty = 1; // set to 0.5 for easy, to 1 for normal, to 2 for super hard
+        this.speedDifficulty = 0.5; // set to 0.5 for easy, to 1 for normal, to 2 for super hard
 
         // Dinosaur group
         this.dinos = this.add.group();
@@ -85,7 +89,8 @@ export class Game extends Scene {
                 if (!this.gameOver) {
                     this.timeTicks += 1;
                     this.score = this.timeTicks / 20;
-                    this.scoreText.setText(Math.floor(this.score.toString()));
+                    let visible_score = Math.floor(this.score) * 100;
+                    this.scoreText.setText(visible_score + "m");
 
                     this.updateJump();
                     this.updateDinos();
@@ -95,6 +100,14 @@ export class Game extends Scene {
             callbackScope: this,
             loop: true
         });
+
+        if (!this.data["restart"]) {
+            this.scene.launch("intro", {
+                "minigame": this,
+                "text": "On weekends, E&G go for adventures. With the kids this is no easy task.\n\nHelp them jump over obstacles.",
+            });
+            this.scene.pause();
+        }
     }
 
     isOnGround(playerId) {
@@ -294,11 +307,17 @@ export class Game extends Scene {
                rectA.height * leniency + rectA.y > rectB.y;
     }
 
-    displayGameOver() {
-        this.add.text(this.game.config.width / 2, this.game.config.height / 2, 'Game Over', {
-            font: '60px Arial',
-            fill: '#ff3399'
-        }).setOrigin(0.5, 0.5);
+    gameover() {
+        if (this.gameOver) return;  // This can be called multiple times before scene is paused.
+        this.gameOver = true;
+
+        let visible_score = Math.floor(this.score) * 100;
+
+        this.scene.launch("gameover", {
+            "minigame": this,
+            "text": "You helped Erik and Gabca travel " + visible_score  + "m.",
+        });
+        this.scene.pause();
     }
 
     randomBetween(min, max) {

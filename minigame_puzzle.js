@@ -63,6 +63,10 @@ export class Game extends Scene
         super("puzzle");
     }
 
+    init(data) {
+        this.data = data;
+    }
+
     create() {
         window.scene = this;
 
@@ -158,9 +162,36 @@ export class Game extends Scene
                         }
                     }
                 });
+
+                // Detect game over.
+                pieces.forEach(p => {
+                    if (p.length == pieces.length) {
+                        this.gameover();
+                    }
+                });
             }, this);
 
             pieces[i] = [item];
         }
+
+        this.intro();
+    }
+
+    intro() {
+        if (!this.data["restart"]) {
+            this.scene.launch("intro", {
+                "minigame": this,
+                "text": "Klara loves to make puzzles. Especially with some help.\n\nThis time she asks you for help.",
+            });
+            this.scene.pause();
+        }
+    }
+
+    gameover() {
+        this.scene.launch("gameover", {
+            "minigame": this,
+            "text": "You helped Klara solving the puzzle.\n\nShe has many puzzles. Try another!",
+        });
+        this.scene.pause();
     }
 }

@@ -62,6 +62,10 @@ export class Game extends Scene
         super("gym");
     }
 
+    init(data) {
+        this.data = data;
+    }
+
     clock2music(ms) {
         return (ms / this.timer.delay) * 10;
     }
@@ -134,6 +138,7 @@ export class Game extends Scene
         // Add bar
         this.graphics = this.add.graphics();
 
+        this.intro();
     }
 
     update() {
@@ -186,5 +191,23 @@ export class Game extends Scene
             graphics.fillRect(x1, y-r, x2-x1, 2*r);
             graphics.fillEllipse(x2, y, 4, 2*r);
         }
+    }
+
+    intro() {
+        if (!this.data["restart"]) {
+            this.scene.launch("intro", {
+                "minigame": this,
+                "text": "Every monday after work Erik goes to the Gym at Google.\n\nHelp him keep the pace with his friend Karolis.",
+            });
+            this.scene.pause();
+        }
+    }
+
+    gameover() {
+        this.scene.launch("gameover", {
+            "minigame": this,
+            "text": "You helped Erik lifting " + this.score + " times.",
+        });
+        this.scene.pause();
     }
 }
