@@ -1,8 +1,8 @@
 import { Scene,  } from "phaser";
 
 
-const RED = 0x80000, BLUE = 0x000080, GREY = 0x808080, BLACK = 0x000000;
-const GOOD = 0x00FF00, BAD = 0xFF0000;
+const RED = 0x80000, BLUE = 0x746598, GREY = 0x808080, BLACK = 0x000000;
+const GOOD = 0x4caf4d, BAD = 0xef4337;
 
 const TARGETS = [
     [[0, 2.0],
@@ -77,8 +77,13 @@ export class Game extends Scene
     create() {
         window.scene = this;
 
+        // Set background
+        this.cameras.main.setBackgroundColor(0xf6a46a);
+
         const width = this.game.config.width;
         const height = this.game.config.height;
+
+        this.add.image(0, 30, "gym_background").setOrigin(0, 0);
 
         this.record = [];
         this.target_idx = 0;
@@ -92,11 +97,9 @@ export class Game extends Scene
             },
         });
 
-        this.player = this.add.sprite(width*3/4, height*3/5, "gym_player_down");
-        this.buddy = this.add.sprite(width*1/4, height*3/5, "gym_buddy_down");
+        this.player = this.add.sprite(width*3/4, height*4.3/5, "gym_player_down");
+        this.buddy = this.add.sprite(width*1/4, height*4.3/5, "gym_buddy_down");
 
-        // Set background
-        this.cameras.main.setBackgroundColor(0xffffff);
 
         // Add back button.
         let back = this.add.image(width - 40, 40, "back");
@@ -138,11 +141,11 @@ export class Game extends Scene
         // Add bar
         this.graphics = this.add.graphics();
 
-        this.intro();
+        //this.intro();
     }
 
     update() {
-        let y = 150;
+        let y = 100;
         let graphics = this.graphics;
         graphics.clear();
 
@@ -152,8 +155,6 @@ export class Game extends Scene
         const t = this.clock2music(this.timer.elapsed);
         const r = 10;
 
-        this.drawRecord(graphics, this.target, y+2*r, t, max_t, width, r);
-        this.drawRecord(graphics, this.record, y+6*r, t, max_t, width, r);
 
         graphics.fillStyle(BLACK);
 
@@ -171,6 +172,9 @@ export class Game extends Scene
         }
         graphics.fillStyle(RED, 1.0);
         graphics.fillRect(t/max_t * width, y, 2, 8*r);
+
+        this.drawRecord(graphics, this.target, y+2*r, t, max_t, width, r);
+        this.drawRecord(graphics, this.record, y+6*r, t, max_t, width, r);
 
         if (isUp(this.target, t)) {
             this.buddy.setTexture("gym_buddy_up");
