@@ -21,6 +21,10 @@ export class Game extends Scene
         super("sorting");
     }
 
+    init(data) {
+        this.data = data;
+    }
+
     create() {
         window.scene = this;
 
@@ -35,10 +39,10 @@ export class Game extends Scene
         back.on("pointerdown", function (p) { this.scene.start("menu"); }, this);
 
         // Add score text.
-        let score = 0;
+        this.score = 0;
         let text = this.add.text(
             width/2, 60,
-            "" + score, {
+            "" + this.score, {
             font: "65px Arial",
             fill: "#440080",
             align: "center"
@@ -46,7 +50,10 @@ export class Game extends Scene
         text.setOrigin(0.5, 0.5);
 
         // Add times.
-        this.timer = this.time.addEvent({ delay: 30*1000 });
+        this.timer = this.time.addEvent({
+            delay: 30*1000,
+            callback: () => { this.gameover(); },
+        });
         this.timer_text = this.add.text(
             width/5, 60,
             this.timer.getRemainingSeconds().toFixed(1), {
@@ -116,8 +123,8 @@ export class Game extends Scene
 
         this.input.on('drop', (pointer, gameObject, zone) => {
             if (gameObject.zone_index == zone.zone_index) {
-                score += 1;
-                text.setText("" + score);
+                this.score += 1;
+                text.setText("" + this.score);
                 reset_item();
             } else {
                 item.x = item.sx;
@@ -136,9 +143,29 @@ export class Game extends Scene
                 item.y = item.sy;
             }
         });
+
+        this.intro();
     }
 
     update() {
         this.timer_text.text = this.timer.getRemainingSeconds().toFixed(1) + "s";
+    }
+
+    intro() {
+        if (!this.data["restart"]) {
+            this.scene.launch("intro", {
+                "minigame": this,
+                "text": "Every two weeks the Czech family comes to visit with a full car...\n\nHelp Gabriela sort the items.",
+            });
+            this.scene.pause();
+        }
+    }
+
+    gameover() {
+        this.scene.launch("gameover", {
+            "minigame": this,
+            "text": "You helped Gabca sort " + this.score + " items.",
+        });
+        this.scene.pause();
     }
 }

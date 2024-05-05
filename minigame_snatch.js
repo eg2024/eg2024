@@ -6,6 +6,10 @@ export class Game extends Scene
         super("snatch");
     }
 
+    init(data) {
+        this.data = data;
+    }
+
     create() {
         window.scene = this;
 
@@ -47,6 +51,8 @@ export class Game extends Scene
             this.resetItem(item);
             this.items.push(item);
         }
+
+        this.intro();
     }
 
     clickItem(item) {
@@ -64,7 +70,7 @@ export class Game extends Scene
             }
         }
         if (this.bad >= this.lives.length) {
-            //this.gameOver();
+            this.gameover();
         } else {
             this.resetItem(item);
         }
@@ -105,5 +111,23 @@ export class Game extends Scene
             item.y = item.sy + item.sd * item.speed;
             if (item.y > height) this.dropItem(item);
         }
+    }
+
+    intro() {
+        if (!this.data["restart"]) {
+            this.scene.launch("intro", {
+                "minigame": this,
+                "text": "Taking care of kids is no easy task.\n\nLet them play with good items. Remove the bad ones.",
+            });
+            this.scene.pause();
+        }
+    }
+
+    gameover() {
+        this.scene.launch("gameover", {
+            "minigame": this,
+            "text": "You let the kids plays with " + this.score + " items.",
+        });
+        this.scene.pause();
     }
 }

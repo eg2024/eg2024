@@ -171,13 +171,14 @@ class Intro extends Phaser.Scene
         );
 
         this.add.rectangle(
-            width*2/8, height*4/5, 100, 100, 0x00ff00
+            width*2/8, height*4/5, 100, 100, 0x800000
         ).setInteractive().on("pointerdown", () => {
-            console.log("bbboo");
+            this.data["minigame"].scene.stop();
+            this.scene.start("menu");
         });
 
         this.add.rectangle(
-            width*6/8, height*4/5, 100, 100, 0x00ff00
+            width*6/8, height*4/5, 100, 100, 0x008000
         ).setInteractive().on("pointerdown", () => {
             this.scene.stop();
             this.data["minigame"].scene.resume();
@@ -202,7 +203,7 @@ class GameOver extends Phaser.Scene
         const height = this.game.config.height;
 
         let bg = this.add.rectangle(0, 0, width, height, 0xf0f0f0).setOrigin(0, 0);
-        bg.alpha = 0.95;
+        bg.alpha = 0.80;
 
         this.add.text(
             width/8, 200, this.data["text"],
@@ -215,13 +216,14 @@ class GameOver extends Phaser.Scene
         );
 
         this.add.rectangle(
-            width*2/8, height*4/5, 100, 100, 0x00ff00
+            width*2/8, height*4/5, 100, 100, 0x800000
         ).setInteractive().on("pointerdown", () => {
+            this.data["minigame"].scene.stop();
             this.scene.start("menu");
         });
 
         this.add.rectangle(
-            width*6/8, height*4/5, 100, 100, 0x00ff00
+            width*6/8, height*4/5, 100, 100, 0x008000
         ).setInteractive().on("pointerdown", () => {
             this.data["minigame"].scene.restart({"restart": true});
             this.scene.stop();
