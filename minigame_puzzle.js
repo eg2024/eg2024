@@ -86,7 +86,10 @@ export class Game extends Scene
         // Add back button.
         let back = this.add.image(width - 40, 40, "back");
         back.setInteractive();
-        back.on("pointerdown", function (p) { this.scene.start("menu"); }, this);
+        back.on("pointerdown", function (p) {
+            this.scene.start("menu");
+            this.scene.stop();
+        }, this);
 
         // This scene keeps track of lists of groups of pieces.
         // Maybe re-implement using disjoint-set structure and merging ids.

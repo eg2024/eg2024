@@ -23,7 +23,10 @@ export class Game extends Scene {
 
         // Back button
         let back = this.add.image(width - 40, 40, "back").setInteractive();
-        back.on("pointerdown", () => this.scene.start("menu"));
+        back.on("pointerdown", () => {
+            this.scene.start("menu");
+            this.scene.stop();
+        });
 
         // Score text
         this.score = 0;

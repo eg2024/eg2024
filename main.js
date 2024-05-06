@@ -245,6 +245,7 @@ class GameOver extends Phaser.Scene
             width*2/8, 500, 100, 100, 0x800000
         ).setOrigin(0.5, 0.0).setInteractive().on("pointerdown", () => {
             this.data["minigame"].scene.stop();
+            this.scene.stop();
             this.scene.start("menu");
         });
 
