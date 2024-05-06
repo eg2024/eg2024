@@ -69,6 +69,13 @@ export class Game extends Scene
 
     create() {
         window.scene = this;
+        const puzzles = [
+            "puzzle_e0", "puzzle_e1",
+            "puzzle_eg0", "puzzle_eg1",
+            "puzzle_k0","puzzle_k1",
+        ];
+        const puzzle_idx = Math.floor(Math.random() * puzzles.length);
+        this.texture = puzzles[puzzle_idx];
 
         const width = this.game.config.width;
         const height = this.game.config.height;
@@ -121,7 +128,7 @@ export class Game extends Scene
         const pieceSize = 67;
 
         for (let i=0; i<12; i++) {
-            const texture = bake_texture(this, "puzzle_img0", 'puzzle_a' + i);
+            const texture = bake_texture(this, this.texture, 'puzzle_a' + i);
             const item = this.add.image(0, 0, texture);
             item.setInteractive({
                 draggable: true,
@@ -190,7 +197,9 @@ export class Game extends Scene
     gameover() {
         this.scene.launch("gameover", {
             "minigame": this,
-            "text": "You helped Klara solving the puzzle.\n\nShe has many puzzles. Try another!",
+            "image": this.texture,
+            "alpha": 0.98,
+            "text": "You helped Klara solve the puzzle.\n\nShe has many puzzles. Try another!",
         });
         this.scene.pause();
     }

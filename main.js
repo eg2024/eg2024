@@ -58,8 +58,13 @@ class Preloader extends Phaser.Scene
 
             // Puzzle assets
             "puzzle_logo": "puzzle_logo.png",
-            "puzzle_img0": "puzzle_erik0.png",
-            "puzzle_img1": "puzzle_img1.png",
+            "puzzle_e0": "puzzle_e0.png",
+            "puzzle_e1": "puzzle_e1.jpg",
+            "puzzle_eg0": "puzzle_eg0.jpg",
+            "puzzle_eg1": "puzzle_eg1.jpg",
+            "puzzle_k0": "puzzle_k0.jpg",
+            "puzzle_k1": "puzzle_k1.jpg",
+            // Puzzle pieces
             "puzzle_a0": "puzzle_pieces/piece0.png",
             "puzzle_a1": "puzzle_pieces/piece1.png",
             "puzzle_a2": "puzzle_pieces/piece2.png",
@@ -210,10 +215,24 @@ class GameOver extends Phaser.Scene
         const height = this.game.config.height;
 
         let bg = this.add.rectangle(0, 0, width, height, 0xf0f0f0).setOrigin(0, 0);
-        bg.alpha = 0.80;
+        if (this.data["alpha"] != undefined) {
+            bg.alpha = this.data["alpha"];
+        } else {
+            bg.alpha = 0.8;
+        }
+
+        let y = 25;
+
+        if (this.data["image"] != undefined) {
+            const img = this.add.image(width/2, y, this.data["image"]);
+            img.setOrigin(0.5, 0);
+            y += img.height + 15;
+        } else {
+            y = 200;
+        }
 
         this.add.text(
-            width/8, 200, this.data["text"],
+            width/8, y, this.data["text"],
             {
                 font: "24px Lato",
                 fill: "#440080",
@@ -223,15 +242,15 @@ class GameOver extends Phaser.Scene
         );
 
         this.add.rectangle(
-            width*2/8, height*4/5, 100, 100, 0x800000
-        ).setInteractive().on("pointerdown", () => {
+            width*2/8, 500, 100, 100, 0x800000
+        ).setOrigin(0.5, 0.0).setInteractive().on("pointerdown", () => {
             this.data["minigame"].scene.stop();
             this.scene.start("menu");
         });
 
         this.add.rectangle(
-            width*6/8, height*4/5, 100, 100, 0x008000
-        ).setInteractive().on("pointerdown", () => {
+            width*6/8, 500, 100, 100, 0x008000
+        ).setOrigin(0.5, 0.0).setInteractive().on("pointerdown", () => {
             this.data["minigame"].scene.restart({"restart": true});
             this.scene.stop();
         });

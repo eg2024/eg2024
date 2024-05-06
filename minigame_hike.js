@@ -105,13 +105,7 @@ export class Game extends Scene {
             loop: true
         });
 
-        if (!this.data["restart"]) {
-            this.scene.launch("intro", {
-                "minigame": this,
-                "text": "On weekends, E&G go for adventures. With the kids this is no easy task.\n\nHelp them jump over obstacles.",
-            });
-            this.scene.pause();
-        }
+        this.intro();
     }
 
     isOnGround(playerId) {
@@ -311,6 +305,16 @@ export class Game extends Scene {
                rectA.height * leniency + rectA.y > rectB.y;
     }
 
+    intro() {
+        if (!this.data["restart"]) {
+            this.scene.launch("intro", {
+                "minigame": this,
+                "text": "On weekends, E&G go for adventures. With the kids this is no easy task.\n\nHelp them jump over obstacles.",
+            });
+            this.scene.pause();
+        }
+    }
+
     gameover() {
         if (this.gameOver) return;  // This can be called multiple times before scene is paused.
         this.gameOver = true;
@@ -319,7 +323,7 @@ export class Game extends Scene {
 
         this.scene.launch("gameover", {
             "minigame": this,
-            "text": "You helped the family hike " + visible_score  + "m.",
+            "text": "You helped the family hike " + visible_score  + "m.\n\n\nTry to help them go further.",
         });
         this.scene.pause();
     }
