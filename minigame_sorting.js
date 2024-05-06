@@ -31,7 +31,8 @@ export class Game extends Scene
         const width = this.game.config.width;
         const height = this.game.config.height;
 
-        this.cameras.main.setBackgroundColor(0xffffff);
+        this.cameras.main.setBackgroundColor(0xd1e3cf);
+        this.add.image(0, 75, "sorting_background").setOrigin(0, 0);
 
         // Add back button.
         let back = this.add.image(width - 40, 40, "back");
@@ -70,7 +71,7 @@ export class Game extends Scene
         const zone_objects = [
             ["snatch_bad0", "snatch_bad1",],
             ["snatch_bad2",],
-            ["snatch_good0", "snatch_good0"],
+            ["sorting_carp", "sorting_chicken"],
         ];
         zones.push(this.add.image(0, 0, "sorting_wardrobe"));
         zones.push(this.add.image(0, 0, "sorting_wardrobe"));

@@ -75,8 +75,11 @@ class Preloader extends Phaser.Scene
 
             // Sorting assets
             "sorting_logo": "sorting_logo.png",
+            "sorting_background": "sorting_background.png",
             "sorting_freezerbox": "sorting_freezerbox.png",
             "sorting_wardrobe": "sorting_wardrobe.png",
+            "sorting_chicken": "sorting_chicken75.png",
+            "sorting_carp": "sorting_carp100.png",
 
             // Hike assets
             "hike_logo": "hike_sprite1.png",
