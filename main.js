@@ -49,7 +49,8 @@ class Preloader extends Phaser.Scene
             "snatch_bad2": "snatch_earring1.png",
 
             // Gym assets
-            "gym_logo": "gym_logo.png",
+            "gym_logo": "gym_erik_down.png",
+            //"gym_logo": "gym_logo.png",
             "gym_background": "gym_background.png",
             "gym_player_up": "gym_erik_up.png",
             "gym_player_down": "gym_erik_down.png",
@@ -133,7 +134,7 @@ class MainMenu extends Phaser.Scene
         // Render buttons for minigames in a 2x2 grid.
         let minigames = ["gym", "sorting", "snatch", "puzzle", "hike"];
 
-        const ncols = 2, nrows = 3, size = 145, space = 5;
+        const ncols = 2, nrows = 3, size = 145, space = 4;
         const cx = width/2, cy = logo_size + (height - logo_size)/2;
         const sx = cx - (ncols*size + (ncols-1)*space)/2 + size/2;
         const sy = cy - (nrows*size + (nrows-1)*space)/2 + size/2;
@@ -146,6 +147,8 @@ class MainMenu extends Phaser.Scene
             const y = sy+col*dd;
 
             let obj = this.add.image(x, y, minigames[i] + "_logo");
+            let scaling = Math.max(size/obj.width, size/obj.height) * 0.8;
+            obj.setScale(scaling, scaling);
             obj.setInteractive();
             obj.on("pointerdown", function (pointer) {
                 this.scene.start(minigames[i]);
