@@ -290,22 +290,27 @@ class GameOver extends Phaser.Scene
         }, this);
 
         // "Cancel button"
-        this.add.rectangle(
-            width*2/8, 500, 100, 100, 0x800000
-        ).setOrigin(0.5, 0.0).setInteractive().on("pointerdown", () => {
+        let size = 100;
+        let obj0 = this.add.image(width*2/8, height*4/5, "back");
+        let scaling0 = Math.max(size/obj0.width, size/obj0.height) * 1;
+        obj0.setScale(scaling0, scaling0);
+        obj0.setInteractive().on("pointerdown", () => {
             this.data["minigame"].scene.stop();
             this.scene.stop();
             this.scene.start("menu");
         });
 
+
         // Play/OK button
-        this.add.rectangle(
-            width*6/8, height*4/5, 100, 100, 0x008000
-            // width/2, 500, 200, 100, 0x008000
-        ).setOrigin(0.5, 0.0).setInteractive().on("pointerdown", () => {
-            this.data["minigame"].scene.restart({"restart": true});
-            this.scene.stop();
-        });
+        {
+            let obj0 = this.add.image(width*6/8, height*4/5, "play");
+            let scaling0 = Math.max(size/obj0.width, size/obj0.height) * 1;
+            obj0.setScale(scaling0, scaling0);
+            obj0.setInteractive().on("pointerdown", () => {
+                this.data["minigame"].scene.restart({"restart": true});
+                this.scene.stop();
+            });
+        }
     }
 }
 
