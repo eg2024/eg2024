@@ -65,7 +65,8 @@ class Preloader extends Phaser.Scene
             "puzzle_eg1": "puzzle_eg1.jpg",
             "puzzle_k0": "puzzle_k0.jpg",
             "puzzle_k1": "puzzle_k1.jpg",
-
+            "puzzle_g0": "puzzle_g0.jpg",
+            "puzzle_j0": "puzzle_j0.jpg",
             // Puzzle pieces
             "puzzle_a0": "puzzle_pieces/piece0.png",
             "puzzle_a1": "puzzle_pieces/piece1.png",
@@ -112,7 +113,7 @@ class Preloader extends Phaser.Scene
     }
 
     create() {
-        this.scene.start(location.hash.substr(1) || "menu");
+        this.scene.start(location.hash.substr(1) || "menu", {restart: true});
     }
 }
 
