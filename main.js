@@ -89,8 +89,18 @@ class Preloader extends Phaser.Scene
             // Sorting assets
             "sorting_logo": "sorting_logo.png",
             "sorting_background": "sorting_background.png",
-            "sorting_freezerbox": "sorting_freezerbox.png",
-            "sorting_wardrobe": "sorting_wardrobe.png",
+            "sorting_fridge": "sorting_fridge.png",
+            "sorting_cupboard": "sorting_cupboard.png",
+            "sorting_klara": "sorting_klara2.png",
+            "sorting_hearts": "sorting_hearts.png",
+            // Sorting items
+            "sorting_gift0": "sorting_gift0.png",
+            "sorting_gift1": "sorting_gift1.png",
+            "sorting_gift2": "sorting_gift2.png",
+            "sorting_gift3": "sorting_gift3.png",
+            "sorting_gift4": "sorting_gift4.png",
+            "sorting_meat0": "sorting_meat0.png",
+            "sorting_meat1": "sorting_meat1.png",
             "sorting_chicken": "sorting_chicken75.png",
             "sorting_carp": "sorting_carp100.png",
 

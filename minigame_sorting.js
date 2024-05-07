@@ -1,19 +1,5 @@
 import { Scene } from "phaser";
 
-function shuffleArray(array) {
-    let currentIndex = array.length;
-
-    // While there remain elements to shuffle...
-    while (currentIndex != 0) {
-      // Pick a remaining element...
-      let randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-}
 
 export class Game extends Scene
 {
@@ -32,7 +18,9 @@ export class Game extends Scene
         const height = this.game.config.height;
 
         this.cameras.main.setBackgroundColor(0xd1e3cf);
-        this.add.image(0, 75, "sorting_background").setOrigin(0, 0);
+        const bg = this.add.image(0, 0, "sorting_background").setOrigin(0, 0).setAlpha(0.5);
+        const hearts = this.add.image(0, 0, "sorting_hearts").setOrigin(0, 0).setAlpha(0.0);
+
 
         // Add back button.
         let back = this.add.image(width - 40, 40, "back");
@@ -72,22 +60,17 @@ export class Game extends Scene
         this.zones = [];
         const zones = this.zones;
         const zone_objects = [
-            ["snatch_bad0", "snatch_bad1",],
+            ["sorting_gift0", "sorting_gift1", "sorting_gift2", "sorting_gift3", "sorting_gift4",],
+            ["sorting_carp", "sorting_chicken", "sorting_meat0", "sorting_meat1"],
             ["snatch_bad2",],
-            ["sorting_carp", "sorting_chicken"],
         ];
-        zones.push(this.add.image(0, 0, "sorting_wardrobe"));
-        zones.push(this.add.image(0, 0, "sorting_wardrobe"));
-        zones.push(this.add.image(0, 0, "sorting_freezerbox"));
+        zones.push(this.add.image(0, 0, "sorting_klara"));
+        zones.push(this.add.image(0, 0, "sorting_fridge"));
+        zones.push(this.add.image(0, 0, "sorting_cupboard"));
 
-        let y = height - 100 - 5;
-        let x = [5, 10+100, 15+200];
-        shuffleArray(x);
         for (let i=0; i!=zones.length; i++) {
-            zones[i].x = x[i];
-            zones[i].y = y;
             zones[i].zone_index = i;
-            zones[i].setInteractive({dropZone: true});
+            zones[i].setInteractive({dropZone: true, pixelPerfect: true});
             zones[i].setOrigin(0, 0);
         }
 
@@ -99,7 +82,7 @@ export class Game extends Scene
         const reset_item = () => {
             if (this.timer.getRemainingSeconds() > 0) {
                 item.sx = width/4 + 2*width/4*Math.random();
-                item.sy = height/2;
+                item.sy = height*7/8;
                 item.x = item.sx;
                 item.y = item.sy;
                 item.zone_index = Math.floor(Math.random() * zones.length);
@@ -115,14 +98,21 @@ export class Game extends Scene
         // Handle input.
         this.input.on('dragenter', (pointer, gameObject, zone) => {
             if (gameObject.zone_index == zone.zone_index) {
-                zone.setTint(0x00ff00);
+                if (gameObject.zone_index == 0) {
+                    hearts.setAlpha(1.0);
+                }
+                else {
+                    zone.setTint(0x88ff88);
+                }
             } else {
-                zone.setTint(0xff0000);
+                zone.setTint(0xff8888);
+                hearts.setAlpha(0.0);
             }
         });
 
         this.input.on('dragleave', (pointer, gameObject, zone) => {
             zone.clearTint();
+            hearts.setAlpha(0.0);
         });
 
         this.input.on('drop', (pointer, gameObject, zone) => {
@@ -135,6 +125,7 @@ export class Game extends Scene
                 item.y = item.sy;
             }
             zone.clearTint();
+            hearts.setAlpha(0.0);
         });
 
         this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
