@@ -73,6 +73,8 @@ export class Game extends Scene
             "puzzle_e0", "puzzle_e1",
             "puzzle_eg0", "puzzle_eg1",
             "puzzle_k0","puzzle_k1",
+            "puzzle_g0",
+            "puzzle_j0",
         ];
         const puzzle_idx = Math.floor(Math.random() * puzzles.length);
         this.texture = puzzles[puzzle_idx];
