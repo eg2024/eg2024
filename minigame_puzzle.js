@@ -1,5 +1,25 @@
 import { Scene } from "phaser";
 
+const ALL_PUZZLES = [
+    "puzzle_e0", "puzzle_e1",
+    "puzzle_eg0", "puzzle_eg1",
+    "puzzle_k0","puzzle_k1",
+    "puzzle_g0",
+    "puzzle_j0",
+];
+
+let puzzles = [];
+
+function next_puzzle() {
+    if (puzzles.length == 0) {
+        for (let i = 0; i != ALL_PUZZLES.length; i++) {
+            puzzles.push(ALL_PUZZLES[i]);
+        }
+        shuffleArray(puzzles);
+    }
+    return puzzles.pop();
+}
+
 
 function shuffleArray(array) {
     let currentIndex = array.length;
@@ -56,7 +76,6 @@ function texture_hitAreaCallback(hitArea, x, y, gameObject) {
     return capture[0].a >= 127;
 }
 
-
 export class Game extends Scene
 {
     constructor() {
@@ -69,15 +88,7 @@ export class Game extends Scene
 
     create() {
         window.scene = this;
-        const puzzles = [
-            "puzzle_e0", "puzzle_e1",
-            "puzzle_eg0", "puzzle_eg1",
-            "puzzle_k0","puzzle_k1",
-            "puzzle_g0",
-            "puzzle_j0",
-        ];
-        const puzzle_idx = Math.floor(Math.random() * puzzles.length);
-        this.texture = puzzles[puzzle_idx];
+        this.texture = next_puzzle();
 
         const width = this.game.config.width;
         const height = this.game.config.height;
