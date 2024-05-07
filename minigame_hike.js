@@ -11,6 +11,7 @@ export class Game extends Scene {
 
     create() {
         this.mountains = [
+            [   0, "Lidingöbron"],
             [ 233, "Mount Inari"],
             [ 870, "Uetliberg"],
             [1136, "Lone Pine Peak"],
@@ -373,13 +374,11 @@ export class Game extends Scene {
 
         let visible_score = Math.floor(this.score) * 10;
 
-        let best_mountain = "";
+        let climbing_text = "You can do better than that.";
         for (let i = 0; i < this.mountains.length; i++) {
             if (visible_score >= this.mountains[i][0])
-                best_mountain = this.mountains[i][1];
+            climbing_text = "This is higher than " + this.mountains[i][1] + ".";
         }
-
-        let climbing_text = best_mountain != ""? "This is higher than " + best_mountain + "." : "";
 
         this.scene.launch("gameover", {
             "minigame": this,
