@@ -36,7 +36,7 @@ class Preloader extends Phaser.Scene
         let images = {
             // Main menu assets
             "main_logo": "main_logo.png",
-            "back": "back.png",
+            "back": "back2.png",
             "heart_full": "heart_full.png",
             "heart_empty": "heart_empty2.png",
 
