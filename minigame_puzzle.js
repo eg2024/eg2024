@@ -43,9 +43,15 @@ function bake_texture(scene, image, mask) {
     // "image" with "mask". This texture ends up being a CanvasRenderingContext2D
     // which is annoying for detecting touch, but still its nice to be dynamic
     // so that we can try any combination of input image and puzzle pieces.
-    const name = image + "_" + mask;
+
+    //const name = image + "_" + mask;
+    //if (scene.textures.exists(name)) {
+    //    return scene.textures.get(name);
+    //}
+    // Note dont keep more baked textures than needed. Destroy old one.
+    const name = "bake_" + mask;
     if (scene.textures.exists(name)) {
-        return scene.textures.get(name);
+        scene.textures.remove(name);
     }
 
     const mask_obj = scene.make.image({key: mask, origin: {x: 0, y: 0}, add: false});
