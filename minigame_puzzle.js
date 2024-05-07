@@ -1,5 +1,25 @@
 import { Scene } from "phaser";
 
+const ALL_PUZZLES = [
+    "puzzle_e0", "puzzle_e1",
+    "puzzle_eg0", "puzzle_eg1",
+    "puzzle_k0","puzzle_k1",
+    "puzzle_g0",
+    "puzzle_j0",
+];
+
+let puzzles = [];
+
+function next_puzzle() {
+    if (puzzles.length == 0) {
+        for (let i = 0; i != ALL_PUZZLES.length; i++) {
+            puzzles.push(ALL_PUZZLES[i]);
+        }
+        shuffleArray(puzzles);
+    }
+    return puzzles.pop();
+}
+
 
 function shuffleArray(array) {
     let currentIndex = array.length;
@@ -23,9 +43,15 @@ function bake_texture(scene, image, mask) {
     // "image" with "mask". This texture ends up being a CanvasRenderingContext2D
     // which is annoying for detecting touch, but still its nice to be dynamic
     // so that we can try any combination of input image and puzzle pieces.
-    const name = image + "_" + mask;
+
+    //const name = image + "_" + mask;
+    //if (scene.textures.exists(name)) {
+    //    return scene.textures.get(name);
+    //}
+    // Note dont keep more baked textures than needed. Destroy old one.
+    const name = "bake_" + mask;
     if (scene.textures.exists(name)) {
-        return scene.textures.get(name);
+        scene.textures.remove(name);
     }
 
     const mask_obj = scene.make.image({key: mask, origin: {x: 0, y: 0}, add: false});
@@ -55,7 +81,6 @@ function texture_hitAreaCallback(hitArea, x, y, gameObject) {
     texture.snapshotPixel(x, y, (color) => { capture.push(color); });
     return capture[0].a >= 127;
 }
-
 
 export class Game extends Scene
 {
