@@ -84,7 +84,7 @@ export class Game extends Scene
         const width = this.game.config.width;
         const height = this.game.config.height;
 
-        this.add.image(0, -80, "gym_background").setOrigin(0, 0);
+        this.add.image(0, -60, "gym_background").setOrigin(0, 0);
 
         this.record = [];
         this.target_idx = 0;
@@ -98,8 +98,15 @@ export class Game extends Scene
             },
         });
 
-        this.player = this.add.sprite(width*3/4, height*3.5/5, "gym_player_down");
-        this.buddy = this.add.sprite(width*1/4, height*3.5/5, "gym_buddy_down");
+        this.player = this.add.sprite(width*3/4, height*3.3/5, "gym_player_down");
+        this.buddy = this.add.sprite(width*1/4, height*3.3/5, "gym_buddy_down");
+
+        /*
+        // Draw white rectangle at top for color consistency with main menu?
+        this.rectangleGraphics = this.add.graphics();
+        this.rectangleGraphics.fillStyle(WHITE, 1);  // Set the color and alpha of the rectangle
+        this.rectangleGraphics.fillRect(0, 0, width, 80);  // Draw the rectangle at position (0,0) with full width and 30px height
+        */
 
         // Add back button.
         let back = this.add.image(width - 40, 40, "back");
@@ -134,7 +141,7 @@ export class Game extends Scene
                 if (matchBeat(this.target, beat)) {
                     beat[2] = GOOD;
                     score += 1;
-                    text.setText("" + score);
+                    text.setText("" + score + " reps");
                 } else {
                     beat[2] = BAD;
                 }
@@ -148,7 +155,7 @@ export class Game extends Scene
     }
 
     update() {
-        let y = 540;
+        let y = 500;
         let graphics = this.graphics;
         graphics.clear();
 
