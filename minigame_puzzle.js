@@ -69,13 +69,27 @@ export class Game extends Scene
 
     create() {
         window.scene = this;
-        const puzzles = [
+        let allpuzzles = [
             "puzzle_e0", "puzzle_e1",
             "puzzle_eg0", "puzzle_eg1",
             "puzzle_k0","puzzle_k1",
             "puzzle_g0",
             "puzzle_j0",
+            "puzzle_bam",
+            "puzzle_death_valley"
         ];
+
+        // Retrieve played puzzles from local storage
+        let playedPuzzles = JSON.parse(localStorage.getItem('playedPuzzles')) || [];
+
+        // Filter out played puzzles
+        let puzzles = allpuzzles.filter(p => !playedPuzzles.includes(p));
+        if (puzzles.length === 0) {
+            puzzles = allpuzzles;
+            localStorage.setItem('playedPuzzles', JSON.stringify([]));
+        }
+        console.log(playedPuzzles);
+
         const puzzle_idx = Math.floor(Math.random() * puzzles.length);
         this.texture = puzzles[puzzle_idx];
 
@@ -178,6 +192,10 @@ export class Game extends Scene
                 // Detect game over.
                 pieces.forEach(p => {
                     if (p.length == pieces.length) {
+                        // Add current puzzle to played puzzles and save to local storage
+                        playedPuzzles.push(this.texture);
+                        localStorage.setItem('playedPuzzles', JSON.stringify(playedPuzzles));
+
                         this.gameover();
                     }
                 });

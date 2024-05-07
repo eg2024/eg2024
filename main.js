@@ -67,6 +67,8 @@ class Preloader extends Phaser.Scene
             "puzzle_k1": "puzzle_k1.jpg",
             "puzzle_g0": "puzzle_g0.jpg",
             "puzzle_j0": "puzzle_j0.jpg",
+            "puzzle_bam": "puzzle_bam.jpg",
+            "puzzle_death_valley": "puzzle_death_valley.jpg",
             // Puzzle pieces
             "puzzle_a0": "puzzle_pieces/piece0.png",
             "puzzle_a1": "puzzle_pieces/piece1.png",
