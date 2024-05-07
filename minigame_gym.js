@@ -1,7 +1,7 @@
 import { Scene,  } from "phaser";
 
 
-const RED = 0x80000, BLUE = 0x746598, GREY = 0x808080, BLACK = 0x000000;
+const RED = 0x80000, BLUE = 0x746598, GREY = 0x808080, BLACK = 0x000000, WHITE = 0xffffff;
 const GOOD = 0x4caf4d, BAD = 0xef4337;
 
 const TARGETS = [
@@ -28,7 +28,7 @@ function makeRecord(data) {
     let record = [];
     let x = data[0][1];
     for (let i=1; i<data.length; i++) {
-        record.push([x, x+data[i][0], BLUE]);
+        record.push([x, x+data[i][0], WHITE]);
         x += data[i][1];
     }
     return record;
@@ -101,7 +101,6 @@ export class Game extends Scene
         this.player = this.add.sprite(width*3/4, height*3.5/5, "gym_player_down");
         this.buddy = this.add.sprite(width*1/4, height*3.5/5, "gym_buddy_down");
 
-
         // Add back button.
         let back = this.add.image(width - 40, 40, "back");
         back.setInteractive();
@@ -115,7 +114,7 @@ export class Game extends Scene
         let text = this.add.text(
             width/2, 40,
             "" + score, {
-            font: "60px Lato",
+            font: "60px Arial",
             fill: "#440080",
             align: "center"
         });
@@ -214,7 +213,7 @@ export class Game extends Scene
     gameover() {
         this.scene.launch("gameover", {
             "minigame": this,
-            "text": "You helped Erik lifting " + this.score + " times.",
+            "text": "You helped Erik perform " + this.score + " reps.",
         });
         this.scene.pause();
     }

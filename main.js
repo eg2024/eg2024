@@ -64,6 +64,7 @@ class Preloader extends Phaser.Scene
             "puzzle_eg1": "puzzle_eg1.jpg",
             "puzzle_k0": "puzzle_k0.jpg",
             "puzzle_k1": "puzzle_k1.jpg",
+
             // Puzzle pieces
             "puzzle_a0": "puzzle_pieces/piece0.png",
             "puzzle_a1": "puzzle_pieces/piece1.png",
@@ -175,7 +176,7 @@ class Intro extends Phaser.Scene
         this.add.text(
             width/8, 200, this.data["text"],
             {
-                font: "24px Lato",
+                font: "24px Arial",
                 fill: "#440080",
                 align: "justify",
                 wordWrap: { width: width * 6/8, useAdvancedWrap: true },
@@ -234,7 +235,7 @@ class GameOver extends Phaser.Scene
         this.add.text(
             width/8, y, this.data["text"],
             {
-                font: "24px Lato",
+                font: "24px Arial",
                 fill: "#440080",
                 align: "justify",
                 wordWrap: { width: width * 6/8, useAdvancedWrap: true },
