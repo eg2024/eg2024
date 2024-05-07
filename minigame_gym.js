@@ -78,12 +78,13 @@ export class Game extends Scene
         window.scene = this;
 
         // Set background
-        this.cameras.main.setBackgroundColor(0xf6a46a);
+        //this.cameras.main.setBackgroundColor(0xf6a46a);
+        this.cameras.main.setBackgroundColor(0x675947);
 
         const width = this.game.config.width;
         const height = this.game.config.height;
 
-        this.add.image(0, 30, "gym_background").setOrigin(0, 0);
+        this.add.image(0, -80, "gym_background").setOrigin(0, 0);
 
         this.record = [];
         this.target_idx = 0;
@@ -97,21 +98,24 @@ export class Game extends Scene
             },
         });
 
-        this.player = this.add.sprite(width*3/4, height*4.3/5, "gym_player_down");
-        this.buddy = this.add.sprite(width*1/4, height*4.3/5, "gym_buddy_down");
+        this.player = this.add.sprite(width*3/4, height*3.5/5, "gym_player_down");
+        this.buddy = this.add.sprite(width*1/4, height*3.5/5, "gym_buddy_down");
 
 
         // Add back button.
         let back = this.add.image(width - 40, 40, "back");
         back.setInteractive();
-        back.on("pointerdown", function (p) { this.scene.start("menu"); }, this);
+        back.on("pointerdown", function (p) {
+            this.scene.start("menu");
+            this.scene.stop();
+        }, this);
 
         // Add score text.
         let score = 0;
         let text = this.add.text(
-            width/2, 60,
+            width/2, 40,
             "" + score, {
-            font: "65px Arial",
+            font: "60px Lato",
             fill: "#440080",
             align: "center"
         });
@@ -141,11 +145,11 @@ export class Game extends Scene
         // Add bar
         this.graphics = this.add.graphics();
 
-        //this.intro();
+        this.intro();
     }
 
     update() {
-        let y = 100;
+        let y = 540;
         let graphics = this.graphics;
         graphics.clear();
 
