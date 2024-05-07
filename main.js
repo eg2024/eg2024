@@ -36,9 +36,12 @@ class Preloader extends Phaser.Scene
         let images = {
             // Main menu assets
             "main_logo": "main_logo.png",
-            "back": "back2.png",
+            "back": "back3.png",
             "heart_full": "heart_full.png",
             "heart_empty": "heart_empty2.png",
+            "game_button": "game_button.png",
+            "play": "play.png",
+            "cancel": "cancel.png",
 
             // Snatch
             "snatch_logo": "snatch_logo.png",
@@ -148,6 +151,10 @@ class MainMenu extends Phaser.Scene
             const col = (i / 2) >> 0;
             const x = sx+row*dd;
             const y = sy+col*dd;
+
+            let obj0 = this.add.image(x, y, "game_button");
+            let scaling0 = Math.max(size/obj0.width, size/obj0.height) * 1;
+            obj0.setScale(scaling0, scaling0);
 
             let obj = this.add.image(x, y, minigames[i] + "_logo");
             let scaling = Math.max(size/obj.width, size/obj.height) * 0.8;
