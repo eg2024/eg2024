@@ -1,26 +1,5 @@
 import { Scene } from "phaser";
 
-const ALL_PUZZLES = [
-    "puzzle_e0", "puzzle_e1",
-    "puzzle_eg0", "puzzle_eg1",
-    "puzzle_k0","puzzle_k1",
-    "puzzle_g0",
-    "puzzle_j0",
-];
-
-let puzzles = [];
-
-function next_puzzle() {
-    if (puzzles.length == 0) {
-        for (let i = 0; i != ALL_PUZZLES.length; i++) {
-            puzzles.push(ALL_PUZZLES[i]);
-        }
-        shuffleArray(puzzles);
-    }
-    return puzzles.pop();
-}
-
-
 function shuffleArray(array) {
     let currentIndex = array.length;
   
@@ -113,7 +92,7 @@ export class Game extends Scene
             puzzles = allpuzzles;
             localStorage.setItem('playedPuzzles', JSON.stringify([]));
         }
-        console.log(playedPuzzles);
+        //console.log(playedPuzzles);
 
         const puzzle_idx = Math.floor(Math.random() * puzzles.length);
         this.texture = puzzles[puzzle_idx];
