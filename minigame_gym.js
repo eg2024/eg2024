@@ -1,28 +1,28 @@
 import { Scene,  } from "phaser";
 
 
+const BPM = 90;
 const RED = 0x80000, BLUE = 0x746598, GREY = 0x808080, BLACK = 0x000000, WHITE = 0xffffff;
 const GOOD = 0x4caf4d, BAD = 0xef4337;
 
 const TARGETS = [
-    [[0, 2.0],
-     [0.25, 1.0], [0.25, 1.0],
-     [0.25, 1.0], [0.25, 1.0],
-     [1.00, 2.0], [1.00, 2.0],
+    [
+        [0.0, 2.0], [1.0, 2.0], [1.0, 2.0], [1.0, 2.0],
+        [0.0, 2.0], [1.0, 2.0], [1.0, 2.0], [1.0, 2.0],
+        [0.0, 0.0],
     ],
-    [[0, 2.0],
-     [0.25, 0.5], [0.25, 1.0],
-     [0.25, 0.5], [0.25, 1.0],
-     [0.25, 0.5], [1.00, 1.5],
-     [0.25, 0.5], [1.00, 1.5],
+    [
+        [0.0, 2.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0],
+        [0.0, 2.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0],
+        [0.0, 0.0],
     ],
-    [[0, 2.0],
-     [0.25, 0.5], [0.25, 0.5], [0.50, 1.0],
-     [0.25, 0.5], [0.25, 0.5], [0.50, 1.0],
-     [0.25, 0.5], [0.25, 0.5], [0.50, 1.0],
-     [0.25, 0.5], [0.25, 0.5], [0.50, 1.0],
+    [
+        [0.0, 2.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0],
+        [0.0, 2.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0],
+        [0.0, 0.0],
     ],
 ];
+
 
 function makeRecord(data) {
     let record = [];
@@ -44,7 +44,7 @@ function isUp(record, t) {
 function matchBeat(record, beat) {
     // Note: allow beats to match more than once.
     const [x1, x2, b_color] = beat;
-    const delta = 0.1;  // Tolerance
+    const delta = 0.15;  // Tolerance
     for (let i=0; i<record.length; i++) {
         let [a1, a2, color] = record[i];
         if ((Math.abs(a1-x1) < delta) && (Math.abs(a2-x2) < delta)) {
@@ -54,6 +54,14 @@ function matchBeat(record, beat) {
     return false;
 }
 
+
+function music2clock(x) {
+    return x*60*1000/BPM;  // ms
+}
+
+function clock2music(ms) {
+    return ms*BPM/1000/60;
+}
 
 
 export class Game extends Scene
@@ -66,40 +74,52 @@ export class Game extends Scene
         this.data = data;
     }
 
-    clock2music(ms) {
-        return (ms / this.timer.delay) * 10;
+    setupLevel() {
+        this.target = makeRecord(TARGETS[this.level % TARGETS.length]);
+        let track_len = this.target[this.target.length - 1][1];
+        this.timer.delay = music2clock(track_len);
+
+        let record = this.target;
+        let num_beats = 0;
+        for (let i=0; i!=record.length; i++) {
+            let [x1, x2, color] = record[i];
+            if (x1 != x2) num_beats += 1;
+        }
+
+        this.record = [];
+        this.num_beats = num_beats;
+        this.score = 0;
+        this.updateScore();
     }
 
-    makeTarget() {
-        this.target = makeRecord(TARGETS[this.target_idx % TARGETS.length]);
+    timeOver() {
+        if (this.num_beats != this.score) {
+            return this.gameover();
+        }
+
+        console.log("Next level");
+        this.level += 1;
+        if (this.level == TARGETS.length) {
+            return this.gameover();
+        }
+        this.setupLevel();
+    }
+
+    updateScore() {
+        this.text.setText("" + this.score + "/" + this.num_beats);
+
     }
 
     create() {
         window.scene = this;
 
-        // Set background
-        //this.cameras.main.setBackgroundColor(0xf6a46a);
-        this.cameras.main.setBackgroundColor(0x675947);
-
         const width = this.game.config.width;
         const height = this.game.config.height;
 
+        // Set background
+        //this.cameras.main.setBackgroundColor(0xf6a46a);
+        this.cameras.main.setBackgroundColor(0x675947);
         this.add.image(0, -60, "gym_background").setOrigin(0, 0);
-
-        this.record = [];
-        this.target_idx = 0;
-        this.makeTarget();
-        this.timer = this.time.addEvent({
-            "delay": 8000*60/72, "loop": true,
-            "callback": () => {
-                this.target_idx += 1;
-                this.makeTarget();
-                this.record = [];
-            },
-        });
-
-        this.player = this.add.sprite(width*3/4, height*3.3/5, "gym_player_down");
-        this.buddy = this.add.sprite(width*1/4, height*3.3/5, "gym_buddy_down");
 
         /*
         // Draw white rectangle at top for color consistency with main menu?
@@ -117,53 +137,75 @@ export class Game extends Scene
         }, this);
 
         // Add score text.
-        let score = 0;
-        let text = this.add.text(
+        this.text = this.add.text(
             width/2, 40,
-            "" + score, {
+            "", {
             font: "60px Arial",
             fill: "#440080",
             align: "center"
+        }).setOrigin(0.5, 0.5);
+
+        // Add characters.
+        this.player = this.add.sprite(width*3/4, height*3.3/5, "gym_player_down");
+        this.buddy = this.add.sprite(width*1/4, height*3.3/5, "gym_buddy_down");
+
+        // Add bar
+        this.graphics = this.add.graphics();
+
+        // Timer
+        this.timer = this.time.addEvent({
+            "delay": 8000*60/72, "loop": true,
+            "callback": () => { this.timeOver(); },
         });
-        text.setOrigin(0.5, 0.5);
 
 
+        // Handle input.
         this.input.on("pointerdown", function (pointer) {
             this.player.setTexture("gym_player_up");
-            this.record.push([this.clock2music(this.timer.elapsed), 0, GREY]);
+            this.record.push([clock2music(this.timer.elapsed), 0, GREY]);
         }, this);
 
         this.input.on("pointerup", function (pointer) {
             this.player.setTexture("gym_player_down");
             if(this.record.length) {
                 let beat = this.record[this.record.length-1];
-                beat[1] = Math.max(beat[0]+0.25, this.clock2music(this.timer.elapsed));
+                beat[1] = Math.max(beat[0]+0.25, clock2music(this.timer.elapsed));
                 if (matchBeat(this.target, beat)) {
                     beat[2] = GOOD;
-                    score += 1;
-                    text.setText("" + score + " reps");
+                    this.score += 1;
+                    this.updateScore();
                 } else {
                     beat[2] = BAD;
                 }
             }
         }, this);
 
-        // Add bar
-        this.graphics = this.add.graphics();
+        this.level = 0;
+        this.setupLevel();
 
         this.intro();
     }
 
     update() {
-        let y = 500;
+        let y = 510;
         let graphics = this.graphics;
         graphics.clear();
 
         const width = this.game.config.width;
         const height = this.game.config.height;
-        const max_t = this.clock2music(this.timer.delay);
-        const t = this.clock2music(this.timer.elapsed);
+        const t = clock2music(this.timer.elapsed);
+        let min_t = 0;
+        let max_t = 8;
+
+        while (max_t <= t) {
+            min_t += 8;
+            max_t += 8;
+        }
         const r = 10;
+
+        function t2x(a) {
+            return (a - min_t) / (max_t - min_t) * width;
+        }
 
 
         graphics.fillStyle(BLACK);
@@ -178,13 +220,13 @@ export class Game extends Scene
         graphics.fillRect(width-2, y, 2, 8*r);
         graphics.fillStyle(BLACK, 0.2);
         for (let i=1; i<max_t; i++) {
-            graphics.fillRect(i/max_t * width, y, 2, 8*r);
+            graphics.fillRect(t2x(i), y, 2, 8*r);
         }
         graphics.fillStyle(RED, 1.0);
-        graphics.fillRect(t/max_t * width, y, 2, 8*r);
+        graphics.fillRect(t2x(t), y, 2, 8*r);
 
-        this.drawRecord(graphics, this.target, y+2*r, t, max_t, width, r);
-        this.drawRecord(graphics, this.record, y+6*r, t, max_t, width, r);
+        this.drawRecord(graphics, this.target, y+2*r, t, t2x, r);
+        this.drawRecord(graphics, this.record, y+6*r, t, t2x, r);
 
         if (isUp(this.target, t)) {
             this.buddy.setTexture("gym_buddy_up");
@@ -193,12 +235,13 @@ export class Game extends Scene
         }
     }
 
-    drawRecord(graphics, record, y, t, max_t, width, r) {
+    drawRecord(graphics, record, y, t, t2x, r) {
         for (let i=0; i!=record.length; i++) {
             let [x1, x2, color] = record[i];
+            if (x1 == x2) continue;
             if(x2 == 0) { x2 = t; }
-            x1 = x1/max_t * width;
-            x2 = x2/max_t * width;
+            x1 = t2x(x1);
+            x2 = t2x(x2);
 
             graphics.fillStyle(color);
             graphics.fillEllipse(x1, y, 4, 2*r);
@@ -211,16 +254,23 @@ export class Game extends Scene
         if (!this.data["restart"]) {
             this.scene.launch("intro", {
                 "minigame": this,
-                "text": "Every monday after work Erik goes to the Gym at Google.\n\nHelp him keep the pace with his friend Karolis.",
+                "text": "Every monday after work Erik goes to the Gym at Google.\n\nHelp him keep pace with Karolis.",
             });
             this.scene.pause();
         }
     }
 
     gameover() {
+        let text = "";
+        if (this.level == TARGETS.length) {
+            text = "Karolis is happy with the session!\n\nThis was better than usual."
+        } else {
+            text = "You have to pace your lift. You got " + this.score + "/" + this.num_beats + " lifts.\n\nYou reached level " + (this.level+1) + "/" + TARGETS.length + ".";
+        }
+
         this.scene.launch("gameover", {
             "minigame": this,
-            "text": "You helped Erik perform " + this.score + " reps.",
+            "text": text,
         });
         this.scene.pause();
     }
