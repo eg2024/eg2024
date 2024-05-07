@@ -195,7 +195,6 @@ class Intro extends Phaser.Scene
             this.scene.start("menu");
         }, this);
 
-        /*
         // Cancel button
         this.add.rectangle(
             width*2/8, height*4/5, 100, 100, 0x800000
@@ -203,11 +202,11 @@ class Intro extends Phaser.Scene
             this.data["minigame"].scene.stop();
             this.scene.start("menu");
         });
-        */
 
         // Play/OK button
         this.add.rectangle(
-            width/2, height*4/5, 200, 100, 0x008000
+            width*6/8, height*4/5, 100, 100, 0x008000
+            // width/2, height*4/5, 200, 100, 0x008000
         ).setInteractive().on("pointerdown", () => {
             this.scene.stop();
             this.data["minigame"].scene.resume();
@@ -267,7 +266,6 @@ class GameOver extends Phaser.Scene
             this.scene.start("menu");
         }, this);
 
-        /*
         // "Cancel button"
         this.add.rectangle(
             width*2/8, 500, 100, 100, 0x800000
@@ -276,11 +274,11 @@ class GameOver extends Phaser.Scene
             this.scene.stop();
             this.scene.start("menu");
         });
-        */
 
         // Play/OK button
         this.add.rectangle(
-            width/2, 500, 200, 100, 0x008000
+            width*6/8, height*4/5, 100, 100, 0x008000
+            // width/2, 500, 200, 100, 0x008000
         ).setOrigin(0.5, 0.0).setInteractive().on("pointerdown", () => {
             this.data["minigame"].scene.restart({"restart": true});
             this.scene.stop();

@@ -222,11 +222,12 @@ export class Game extends Scene
         for (let i=1; i<max_t; i++) {
             graphics.fillRect(t2x(i), y, 2, 8*r);
         }
-        graphics.fillStyle(RED, 1.0);
-        graphics.fillRect(t2x(t), y, 2, 8*r);
 
         this.drawRecord(graphics, this.target, y+2*r, t, t2x, r);
         this.drawRecord(graphics, this.record, y+6*r, t, t2x, r);
+
+        graphics.fillStyle(RED, 1.0);
+        graphics.fillRect(t2x(t), y, 2, 8*r);
 
         if (isUp(this.target, t)) {
             this.buddy.setTexture("gym_buddy_up");
