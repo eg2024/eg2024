@@ -81,6 +81,13 @@ export class Game extends Scene
         back.setInteractive();
         back.on("pointerdown", function (p) { this.scene.start("menu"); }, this);
 
+        // Trigger dynamic loading of "moo.jpg"
+        this.load.image('moo', 'assets/puzzle_images/1yr.jpg');
+        this.load.once('complete', this.setupPuzzle, this); // Setup puzzle after image loads
+        this.load.start();
+    }
+
+    setupPuzzle() {
         // This scene keeps track of lists of groups of pieces.
         // Maybe re-implement using disjoint-set structure and merging ids.
         const areTwoPiecesTogether = (pieceA, pieceB) => {
@@ -121,7 +128,7 @@ export class Game extends Scene
         const pieceSize = 67;
 
         for (let i=0; i<12; i++) {
-            const texture = bake_texture(this, "puzzle_img0", 'puzzle_a' + i);
+            const texture = bake_texture(this, "moo", 'puzzle_a' + i);
             const item = this.add.image(0, 0, texture);
             item.setInteractive({
                 draggable: true,

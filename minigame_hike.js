@@ -195,6 +195,8 @@ export class Game extends Scene {
         dino.vx = -6;
         dino.vy = 2;
         dino.rotation_speed = 0;
+        dino.is_jumping = false;
+        dino.has_started_moving = false;
 
         if (sprite == "hike_tree") {
             dino.setScale(this.game.config.width * 0.15 / dino.width * 2);
@@ -206,7 +208,7 @@ export class Game extends Scene {
         if (sprite == "hike_geometry_dash") {
             dino.setScale(this.game.config.width * 0.15 / dino.width * 0.5);
             dino.y -= 5;
-            dino.rotation_speed = -11; // degrees per frame
+            dino.is_jumping = true;
         }
         if (sprite == "hike_funicular") {
             dino.setScale(this.game.config.width * 0.15 / dino.width * 2);
@@ -235,9 +237,25 @@ export class Game extends Scene {
             this.dinos.getChildren().forEach(dino => {
                 dino.x += dino.vx * this.speedDifficulty;
                 dino.y += dino.vy * this.speedDifficulty;
-                if (dino.rotation_speed != 0) {
+                if (dino.rotation_speed != 0)
                     dino.angle += dino.rotation_speed;
+
+                if (dino.is_jumping) {
+                    // Very clumsy way of making an enemy jump sometimes
+                    // Essentially I add a sine wave to its movement but only the positive part,
+                    // and when it's jumping it also rotates by a full rotation.
+
+                    function addedJumpDisplacement(x) {
+                        return -40*Math.max(0, Math.sin(x/8));
+                    }
+    
+                    dino.rotation = addedJumpDisplacement(this.timeTicks) < 0? -2 * (this.timeTicks/8) : 0;
+                    dino.y += addedJumpDisplacement(this.timeTicks); 
+                    if (dino.has_started_moving)
+                        dino.y -= addedJumpDisplacement(this.timeTicks-1);
                 }
+
+                dino.has_started_moving = true;
             });
         }
     }
