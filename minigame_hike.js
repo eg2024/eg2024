@@ -10,8 +10,39 @@ export class Game extends Scene {
     }
 
     create() {
+        this.mountains = [
+            [ 233, "Mount Inari"],
+            [ 870, "Uetliberg"],
+            [1136, "Lone Pine Peak"],
+            [1372, "Mount Doom"],
+            [1437, "Andermatt"],
+            [1905, "Riederalp"],
+            [3776, "Mount Fuji"],
+            [4412, "Mount Whitney"],
+            [8849, "Mount Everest"],
+        ];
+
         const width = this.game.config.width;
         const height = this.game.config.height;
+
+        // Add text to the scene
+        let text = this.add.text(100, 100, 'This text will fade out', {
+            font: '24px Arial',
+            fill: '#ffffff'
+        });
+
+        // // Create a tween for fading out
+        // this.tweens.add({
+        //     targets: text, // the text object
+        //     alpha: 0,      // fade to transparent
+        //     ease: 'Linear', // easing function to use
+        //     duration: 2000, // duration of the tween in milliseconds
+        //     repeat: 0,      // repeat infinitely
+        //     yoyo: false,    // apply the tween in reverse on alternate repeats
+        //     onComplete: function () {
+        //         text.destroy(); // optionally destroy text after fade
+        //     }
+        // });
 
         // Set background
         this.cameras.main.setBackgroundColor(0xffffff);
@@ -342,9 +373,17 @@ export class Game extends Scene {
 
         let visible_score = Math.floor(this.score) * 10;
 
+        let best_mountain = "";
+        for (let i = 0; i < this.mountains.length; i++) {
+            if (visible_score >= this.mountains[i][0])
+                best_mountain = this.mountains[i][1];
+        }
+
+        let climbing_text = best_mountain != ""? "This is higher than " + best_mountain + "." : "";
+
         this.scene.launch("gameover", {
             "minigame": this,
-            "text": "You helped the family hike " + visible_score  + "m.\n\n\nTry to help them go further.",
+            "text": "You helped the family hike " + visible_score  + "m.\n\n" + climbing_text + "\n\nTry to go even higher.",
         });
         this.scene.pause();
     }
