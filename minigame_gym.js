@@ -261,10 +261,15 @@ export class Game extends Scene
     }
 
     intro() {
+        let msg = "Every monday after work Erik goes to the Gym at Google.\n\nHelp him keep pace with Karolis.";
+        let highscore = JSON.parse(localStorage.getItem('highscore_gym')) || 0;
+        if (highscore > 0)
+            msg += "\n\nHighscore: " + highscore + " reps";
+
         if (!this.data["restart"]) {
             this.scene.launch("intro", {
                 "minigame": this,
-                "text": "Every monday after work Erik goes to the Gym at Google.\n\nHelp him keep pace with Karolis.",
+                "text": msg,
             });
             this.scene.pause();
         }

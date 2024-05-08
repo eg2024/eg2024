@@ -176,10 +176,15 @@ export class Game extends Scene
     }
 
     intro() {
+        let besttime = JSON.parse(localStorage.getItem('highscore_sorting')) || 100000;
+        let msg = "Every two weeks the Czech family comes to visit with a full car...\n\nHelp Gabriela sort the items.";
+        if (besttime < 100000)
+            msg += "\n\nHighscore: " + besttime + "s";
+
         if (!this.data["restart"]) {
             this.scene.launch("intro", {
                 "minigame": this,
-                "text": "Every two weeks the Czech family comes to visit with a full car...\n\nHelp Gabriela sort the items.",
+                "text": msg,
             });
             this.scene.pause();
         }

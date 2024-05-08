@@ -360,10 +360,15 @@ export class Game extends Scene {
     }
 
     intro() {
+        let msg = "On weekends, E&G go for adventures. \n\nHelp them jump over obstacles.";
+        let highscore = JSON.parse(localStorage.getItem('highscore_hike')) || 0;
+        if (highscore > 0)
+            msg += "\n\nHighscore: " + highscore + "m";
+
         if (!this.data["restart"]) {
             this.scene.launch("intro", {
                 "minigame": this,
-                "text": "On weekends, E&G go for adventures. With the kids this is no easy task.\n\nHelp them jump over obstacles as they hike up this mountain.",
+                "text": msg,
             });
             this.scene.pause();
         }
