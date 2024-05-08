@@ -31,6 +31,7 @@ export class Game extends Scene
             this.scene.start("menu");
             this.scene.stop();
         }, this);
+        this.back = back;
 
         // Add score text.
         this.score = 0;
@@ -185,6 +186,7 @@ export class Game extends Scene
     }
 
     gameover() {
+        this.back.visible = false;
         let text = "Gabriela thanks you. This was much easier with your help.\n\nYou sorted " + this.score + " items in " + this.timer.getElapsedSeconds().toFixed(1) + "s.";
         this.scene.launch("gameover", {
             "minigame": this,

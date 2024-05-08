@@ -116,6 +116,7 @@ export class Game extends Scene
             this.scene.start("menu");
             this.scene.stop();
         }, this);
+        this.back = back;
 
         // This scene keeps track of lists of groups of pieces.
         // Maybe re-implement using disjoint-set structure and merging ids.
@@ -232,6 +233,7 @@ export class Game extends Scene
     }
 
     gameover(numTot, numDone) {
+        this.back.visible = false;
         let msg = numTot > numDone? 
             "You have helped Klara solve " + numDone + " out of " + numTot + " puzzles. Try another!" :
             "You have solved all of Klara's puzzles!";

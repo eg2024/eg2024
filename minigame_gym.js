@@ -136,6 +136,7 @@ export class Game extends Scene
             this.scene.start("menu");
             this.scene.stop();
         }, this);
+        this.back = back;
 
         // Add score text.
         this.text = this.add.text(
@@ -270,6 +271,8 @@ export class Game extends Scene
     }
 
     gameover() {
+        this.back.visible = false;
+        
         let text = "";
         if (this.level == TARGETS.length) {
             text = "Karolis is happy with the session!\n\nThis was better than usual."

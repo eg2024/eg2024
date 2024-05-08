@@ -42,7 +42,8 @@ class Preloader extends Phaser.Scene
             "heart_empty": "heart_empty2.png",
             "game_button": "game_button.png",
             "play": "play.png",
-            "cancel": "cancel.png",
+            //"cancel": "cancel.png",
+            "cancel": "back4.png",
 
             // Snatch
             "snatch_logo": "snatch_logo.png",
@@ -219,12 +220,14 @@ class Intro extends Phaser.Scene
         );
 
         // Add back button.
+        /*
         let back = this.add.image(width - 40, 40, "back");
         back.setInteractive();
         back.on("pointerdown", function (p) {
             this.data["minigame"].scene.stop();
             this.scene.start("menu");
         }, this);
+        */
 
         // Cancel button
         let size = 100;
@@ -293,6 +296,7 @@ class GameOver extends Phaser.Scene
         );
 
         // Add back button.
+        /*
         let back = this.add.image(width - 40, 40, "back");
         back.setInteractive();
         back.on("pointerdown", function (p) {
@@ -300,6 +304,7 @@ class GameOver extends Phaser.Scene
             this.scene.stop();
             this.scene.start("menu");
         }, this);
+        */
 
         // "Cancel button"
         let size = 100;

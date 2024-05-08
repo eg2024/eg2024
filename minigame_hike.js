@@ -59,6 +59,7 @@ export class Game extends Scene {
             this.scene.start("menu");
             this.scene.stop();
         });
+        this.back = back;
 
         // Score text
         this.score = 0;
@@ -371,6 +372,8 @@ export class Game extends Scene {
     gameover() {
         if (this.gameOver) return;  // This can be called multiple times before scene is paused.
         this.gameOver = true;
+
+        this.back.visible = false;
 
         let visible_score = Math.floor(this.score) * 10;
 
