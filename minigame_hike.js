@@ -363,7 +363,7 @@ export class Game extends Scene {
         if (!this.data["restart"]) {
             this.scene.launch("intro", {
                 "minigame": this,
-                "text": "On weekends, E&G go for adventures. With the kids this is no easy task.\n\nHelp them jump over obstacles.",
+                "text": "On weekends, E&G go for adventures. With the kids this is no easy task.\n\nHelp them jump over obstacles as they hike up this mountain.",
             });
             this.scene.pause();
         }
@@ -377,15 +377,27 @@ export class Game extends Scene {
 
         let visible_score = Math.floor(this.score) * 10;
 
+        let highscore = JSON.parse(localStorage.getItem('highscore')) || 0;
+        let newhighscore = highscore < visible_score;
+        highscore = Math.max(highscore, visible_score);
+        localStorage.setItem('highscore', JSON.stringify(highscore));
+
         let climbing_text = "You can do better than that.";
         for (let i = 0; i < this.mountains.length; i++) {
             if (visible_score >= this.mountains[i][0])
             climbing_text = "This is higher than " + this.mountains[i][1] + ".";
         }
 
+        let msg = "You helped the family hike " + visible_score  + "m.\n\n" + climbing_text;
+        if (newhighscore)
+            msg += "\n\nNEW HIGHSCORE!"
+        else
+            msg += "\n\nHighscore: " + highscore + "m";
+        
+
         this.scene.launch("gameover", {
             "minigame": this,
-            "text": "You helped the family hike " + visible_score  + "m.\n\n" + climbing_text + "\n\nTry to go even higher.",
+            "text": msg,
         });
         this.scene.pause();
     }

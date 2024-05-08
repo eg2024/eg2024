@@ -234,6 +234,7 @@ export class Game extends Scene
 
     gameover(numTot, numDone) {
         this.back.visible = false;
+
         let msg = numTot > numDone? 
             "You have helped Klara solve " + numDone + " out of " + numTot + " puzzles. Try another!" :
             "You have solved all of Klara's puzzles!";

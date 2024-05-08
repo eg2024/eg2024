@@ -187,7 +187,20 @@ export class Game extends Scene
 
     gameover() {
         this.back.visible = false;
-        let text = "Gabriela thanks you. This was much easier with your help.\n\nYou sorted " + this.score + " items in " + this.timer.getElapsedSeconds().toFixed(1) + "s.";
+
+        let thistime = this.timer.getElapsedSeconds().toFixed(1);
+
+        let besttime = JSON.parse(localStorage.getItem('besttime')) || 100000;
+        let newbesttime = besttime > thistime;
+        besttime = Math.min(besttime, thistime);
+        localStorage.setItem('besttime', JSON.stringify(besttime));
+
+        let text = "Gabriela thanks you. This was much easier with your help.\n\nYou sorted " + this.score + " items in " + thistime + "s.";
+        if (newbesttime)
+            text += "\n\nNEW BEST TIME!"
+        else
+            text += "\n\nBest time: " + besttime + "s";
+
         this.scene.launch("gameover", {
             "minigame": this,
             "text": text,
