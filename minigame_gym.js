@@ -106,6 +106,7 @@ export class Game extends Scene
     }
 
     updateScore() {
+        this.lvl_text.setText("Lvl " + (this.level + 1));
         this.text.setText("" + this.score + "/" + this.num_beats);
 
     }
@@ -141,6 +142,13 @@ export class Game extends Scene
             width/2, 40,
             "", {
             font: "60px Arial",
+            fill: "#440080",
+            align: "center"
+        }).setOrigin(0.5, 0.5);
+
+        this.lvl_text = this.add.text(
+            width/6, 40, "", {
+            font: "20px Arial",
             fill: "#440080",
             align: "center"
         }).setOrigin(0.5, 0.5);

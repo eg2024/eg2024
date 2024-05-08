@@ -35,7 +35,7 @@ export class Game extends Scene
         // Add score text.
         this.score = 0;
         let text = this.add.text(
-            width/2, 60,
+            width/2, 40,
             "", {
             font: "60px Arial",
             fill: "#440080",
@@ -49,7 +49,8 @@ export class Game extends Scene
             callback: () => { this.gameover(); },
         });
         this.timer_text = this.add.text(
-            width/6, 60, "filled in update", {
+            width/6, 40,
+            "", {
             font: "20px Arial",
             fill: "#440080",
             align: "center"
