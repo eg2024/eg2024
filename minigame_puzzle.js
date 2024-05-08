@@ -222,7 +222,7 @@ export class Game extends Scene
     }
 
     intro(numTot, numDone) {
-        let msg = "Klara loves to make puzzles. Especially with some help.\n\nYou have helped Klara solve " + numDone + " out of " + numTot + " puzzles.";
+        let msg = "Klara loves to do puzzles. Especially with some help.\n\nYou have helped Klara solve " + numDone + " out of " + numTot + " puzzles.";
         if (!this.data["restart"]) {
             this.scene.launch("intro", {
                 "minigame": this,
