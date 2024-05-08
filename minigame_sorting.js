@@ -17,9 +17,11 @@ export class Game extends Scene
         const width = this.game.config.width;
         const height = this.game.config.height;
 
-        this.cameras.main.setBackgroundColor(0xd1e3cf);
-        const bg = this.add.image(0, 0, "sorting_background").setOrigin(0, 0).setAlpha(0.5);
-        const hearts = this.add.image(0, 0, "sorting_hearts").setOrigin(0, 0).setAlpha(0.0);
+        //this.cameras.main.setBackgroundColor(0xd1e3cf);
+        this.cameras.main.setBackgroundColor(0x9dc89a);
+        const y_off = 75;
+        const bg = this.add.image(0, y_off, "sorting_background").setOrigin(0, 0).setAlpha(0.5);
+        const hearts = this.add.image(0, y_off, "sorting_hearts").setOrigin(0, 0).setAlpha(0.0);
 
 
         // Add back button.
@@ -47,7 +49,7 @@ export class Game extends Scene
             callback: () => { this.gameover(); },
         });
         this.timer_text = this.add.text(
-            width/5, 60, "filled in update", {
+            width/6, 60, "filled in update", {
             font: "20px Arial",
             fill: "#440080",
             align: "center"
@@ -75,9 +77,9 @@ export class Game extends Scene
                 "sorting_jar0", "sorting_jar1", "sorting_jar2", "sorting_jar3",
             ],
         ];
-        zones.push(this.add.image(0, 0, "sorting_klara"));
-        zones.push(this.add.image(0, 0, "sorting_fridge"));
-        zones.push(this.add.image(0, 0, "sorting_cupboard"));
+        zones.push(this.add.image(0, y_off, "sorting_klara"));
+        zones.push(this.add.image(0, y_off, "sorting_fridge"));
+        zones.push(this.add.image(0, y_off, "sorting_cupboard"));
 
 
         for (let i=0; i!=zones.length; i++) {
@@ -103,14 +105,17 @@ export class Game extends Scene
         const reset_item = () => {
             text.text = this.score + "/" + this.num_objects;
             if (all_items.length) {
-                item.sx = width/4 + 2*width/4*Math.random();
-                item.sy = height*7/8;
+                //item.sx = width/4 + 2*width/4*Math.random();
+                item.sx = 180;
+                item.sy = 250;
                 item.x = item.sx;
                 item.y = item.sy;
+                item.setOrigin(0.5, 0.5);
                 let [it_tex, it_zone] = all_items.pop();
                 item.setTexture(it_tex);
                 item.zone_index = it_zone;
             } else {
+                item.setAlpha(0.0);
                 this.gameover();
             }
         };
