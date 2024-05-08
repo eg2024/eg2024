@@ -84,7 +84,13 @@ export class Game extends Scene
         ];
 
         // Retrieve played puzzles from local storage
+        // This will reset once all puzzles have been solved
         let playedPuzzles = JSON.parse(localStorage.getItem('playedPuzzles')) || [];
+
+        // Retrieve total solved puzzles ever from local storage
+        // This will never reset
+        let numDonePuzzlesEver = JSON.parse(localStorage.getItem('numDonePuzzlesEver')) || 0;
+        numDonePuzzlesEver = Math.max(numDonePuzzlesEver, playedPuzzles.length);
 
         // Filter out played puzzles
         let puzzles = allpuzzles.filter(p => !playedPuzzles.includes(p));
@@ -200,7 +206,10 @@ export class Game extends Scene
                         playedPuzzles.push(this.texture);
                         localStorage.setItem('playedPuzzles', JSON.stringify(playedPuzzles));
 
-                        this.gameover();
+                        numDonePuzzlesEver = Math.max(numDonePuzzlesEver, playedPuzzles.length);
+                        localStorage.setItem('numDonePuzzlesEver', JSON.stringify(numDonePuzzlesEver));
+
+                        this.gameover(allpuzzles.length, numDonePuzzlesEver);
                     }
                 });
             }, this);
@@ -208,25 +217,30 @@ export class Game extends Scene
             pieces[i] = [item];
         }
 
-        this.intro();
+        this.intro(allpuzzles.length, numDonePuzzlesEver);
     }
 
-    intro() {
+    intro(numTot, numDone) {
+        let msg = "Klara loves to make puzzles. Especially with some help.\n\nYou have helped Klara solve " + numDone + " out of " + numTot + " puzzles.";
         if (!this.data["restart"]) {
             this.scene.launch("intro", {
                 "minigame": this,
-                "text": "Klara loves to make puzzles. Especially with some help.\n\nThis time she asks you for help.",
+                "text": msg,
             });
             this.scene.pause();
         }
     }
 
-    gameover() {
+    gameover(numTot, numDone) {
+        let msg = numTot > numDone? 
+            "You have helped Klara solve " + numDone + " out of " + numTot + " puzzles. Try another!" :
+            "You have solved all of Klara's puzzles!";
+
         this.scene.launch("gameover", {
             "minigame": this,
             "image": this.texture,
             "alpha": 0.98,
-            "text": "You helped Klara solve the puzzle.\n\nShe has many puzzles. Try another!",
+            "text": msg,
         });
         this.scene.pause();
     }
