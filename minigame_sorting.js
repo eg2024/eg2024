@@ -34,8 +34,8 @@ export class Game extends Scene
         this.score = 0;
         let text = this.add.text(
             width/2, 60,
-            "" + this.score, {
-            font: "65px Arial",
+            "", {
+            font: "60px Arial",
             fill: "#440080",
             align: "center"
         });
@@ -43,30 +43,42 @@ export class Game extends Scene
 
         // Add times.
         this.timer = this.time.addEvent({
-            delay: 30*1000,
+            delay: 5*60*1000,
             callback: () => { this.gameover(); },
         });
         this.timer_text = this.add.text(
-            width/5, 60,
-            this.timer.getRemainingSeconds().toFixed(1), {
-            font: "30px Arial",
+            width/5, 60, "filled in update", {
+            font: "20px Arial",
             fill: "#440080",
             align: "center"
         });
         this.timer_text.setOrigin(0.5, 0.5);
+        this.update();
 
         // Areas to drop items.
         // https://labs.phaser.io/view.html?src=src/input/zones/sprite%20drop%20zone.js
         this.zones = [];
         const zones = this.zones;
         const zone_objects = [
-            ["sorting_gift0", "sorting_gift1", "sorting_gift2", "sorting_gift3", "sorting_gift4",],
-            ["sorting_carp", "sorting_chicken", "sorting_meat0", "sorting_meat1", "sorting_meat2", "sorting_meat3", "sorting_meat4", "sorting_meat5", "sorting_meat6", "sorting_meat7", "sorting_meat0"],
-            ["sorting_jar0", "sorting_jar1", "sorting_jar2", "sorting_jar3"],
+            [
+                "sorting_gift0", "sorting_gift1", "sorting_gift2", "sorting_gift3", "sorting_gift4",
+                "sorting_gift0", "sorting_gift1", "sorting_gift2", "sorting_gift3", "sorting_gift4",
+                "sorting_gift0", "sorting_gift1", "sorting_gift2", "sorting_gift3", "sorting_gift4",
+            ],
+            [
+                "sorting_carp", "sorting_chicken", "sorting_carp", "sorting_chicken",
+                "sorting_meat0", "sorting_meat1", "sorting_meat2", "sorting_meat3", "sorting_meat4", "sorting_meat5", "sorting_meat6", "sorting_meat7", "sorting_meat0",
+            ],
+            [
+                "sorting_jar0", "sorting_jar1", "sorting_jar2", "sorting_jar3",
+                "sorting_jar0", "sorting_jar1", "sorting_jar2", "sorting_jar3",
+                "sorting_jar0", "sorting_jar1", "sorting_jar2", "sorting_jar3",
+            ],
         ];
         zones.push(this.add.image(0, 0, "sorting_klara"));
         zones.push(this.add.image(0, 0, "sorting_fridge"));
         zones.push(this.add.image(0, 0, "sorting_cupboard"));
+
 
         for (let i=0; i!=zones.length; i++) {
             zones[i].zone_index = i;
@@ -74,22 +86,32 @@ export class Game extends Scene
             zones[i].setOrigin(0, 0);
         }
 
+        let all_items = [];
+        for (let i=0; i!=zone_objects.length; i++) {
+            for (let j=0; j!=zone_objects[i].length; j++) {
+                all_items.push([zone_objects[i][j], i]);
+            }
+        }
+        shuffleArray(all_items);
+        this.num_objects = all_items.length;
+
         // Item to sort.
-        this.item = this.add.sprite(0, 0, "snatch_good0");
+        this.item = this.add.sprite(0, 0, "");
         const item = this.item;
         item.setInteractive({draggable: true});
 
         const reset_item = () => {
-            if (this.timer.getRemainingSeconds() > 0) {
+            text.text = this.score + "/" + this.num_objects;
+            if (all_items.length) {
                 item.sx = width/4 + 2*width/4*Math.random();
                 item.sy = height*7/8;
                 item.x = item.sx;
                 item.y = item.sy;
-                item.zone_index = Math.floor(Math.random() * zones.length);
-                const tex_idx = Math.floor(Math.random() * zone_objects[item.zone_index].length);
-                item.setTexture(zone_objects[item.zone_index][tex_idx]);
+                let [it_tex, it_zone] = all_items.pop();
+                item.setTexture(it_tex);
+                item.zone_index = it_zone;
             } else {
-                item.input.enabled = false;
+                this.gameover();
             }
         };
 
@@ -143,7 +165,7 @@ export class Game extends Scene
     }
 
     update() {
-        this.timer_text.text = this.timer.getRemainingSeconds().toFixed(1) + "s";
+        this.timer_text.text = this.timer.getElapsedSeconds().toFixed(1) + "s";
     }
 
     intro() {
@@ -157,10 +179,28 @@ export class Game extends Scene
     }
 
     gameover() {
+        let text = "Gabriela thanks you. This was much easier with your help.\n\nYou sorted " + this.score + " items in " + this.timer.getElapsedSeconds().toFixed(1) + "s.";
         this.scene.launch("gameover", {
             "minigame": this,
-            "text": "You helped Gabca sort " + this.score + " items.",
+            "text": text,
         });
         this.scene.pause();
+    }
+}
+
+
+function shuffleArray(array) {
+    let currentIndex = array.length;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+
+      // Pick a remaining element...
+      let randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
     }
 }
