@@ -61,8 +61,8 @@ export class Game extends Scene
         const zones = this.zones;
         const zone_objects = [
             ["sorting_gift0", "sorting_gift1", "sorting_gift2", "sorting_gift3", "sorting_gift4",],
-            ["sorting_carp", "sorting_chicken", "sorting_meat0", "sorting_meat1"],
-            ["snatch_bad2",],
+            ["sorting_carp", "sorting_chicken", "sorting_meat0", "sorting_meat1", "sorting_meat2", "sorting_meat3", "sorting_meat4", "sorting_meat5", "sorting_meat6", "sorting_meat7", "sorting_meat0"],
+            ["sorting_jar0", "sorting_jar1", "sorting_jar2", "sorting_jar3"],
         ];
         zones.push(this.add.image(0, 0, "sorting_klara"));
         zones.push(this.add.image(0, 0, "sorting_fridge"));
