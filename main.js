@@ -36,7 +36,8 @@ class Preloader extends Phaser.Scene
         let images = {
             // Main menu assets
             "main_logo": "main_logo.png",
-            "back": "back3.png",
+            //"back": "back3.png",
+            "back": "back4.png",
             "heart_full": "heart_full.png",
             "heart_empty": "heart_empty2.png",
             "game_button": "game_button.png",
@@ -227,7 +228,7 @@ class Intro extends Phaser.Scene
 
         // Cancel button
         let size = 100;
-        let obj0 = this.add.image(width*2/8, height*4/5, "back");
+        let obj0 = this.add.image(width*2/8, height*4/5, "cancel");
         let scaling0 = Math.max(size/obj0.width, size/obj0.height) * 1;
         obj0.setScale(scaling0, scaling0);
         obj0.setInteractive().on("pointerdown", () => {
@@ -302,7 +303,7 @@ class GameOver extends Phaser.Scene
 
         // "Cancel button"
         let size = 100;
-        let obj0 = this.add.image(width*2/8, height*4/5, "back");
+        let obj0 = this.add.image(width*2/8, height*4/5, "cancel");
         let scaling0 = Math.max(size/obj0.width, size/obj0.height) * 1;
         obj0.setScale(scaling0, scaling0);
         obj0.setInteractive().on("pointerdown", () => {
