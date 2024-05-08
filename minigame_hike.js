@@ -377,10 +377,10 @@ export class Game extends Scene {
 
         let visible_score = Math.floor(this.score) * 10;
 
-        let highscore = JSON.parse(localStorage.getItem('highscore')) || 0;
+        let highscore = JSON.parse(localStorage.getItem('highscore_hike')) || 0;
         let newhighscore = highscore < visible_score;
         highscore = Math.max(highscore, visible_score);
-        localStorage.setItem('highscore', JSON.stringify(highscore));
+        localStorage.setItem('highscore_hike', JSON.stringify(highscore));
 
         let climbing_text = "You can do better than that.";
         for (let i = 0; i < this.mountains.length; i++) {

@@ -272,13 +272,23 @@ export class Game extends Scene
 
     gameover() {
         this.back.visible = false;
-        
+
+        let highscore = JSON.parse(localStorage.getItem('highscore_gym')) || 0;
+        let newhighscore = highscore < this.score;
+        highscore = Math.max(highscore, this.score);
+        localStorage.setItem('highscore_gym', JSON.stringify(highscore));
+
         let text = "";
         if (this.level == TARGETS.length) {
             text = "Karolis is happy with the session!\n\nThis was better than usual."
         } else {
-            text = "You have to pace your lift. You got " + this.score + "/" + this.num_beats + " lifts.\n\nYou reached level " + (this.level+1) + "/" + TARGETS.length + ".";
+            text = "You have to pace your lift. You got " + this.score + "/" + this.num_beats + " reps.\n\nYou reached level " + (this.level+1) + "/" + TARGETS.length + ".";
         }
+
+        if (newhighscore)
+            text += "\n\nNEW HIGHSCORE!"
+        else
+            text += "\n\nHighscore: " + highscore + " reps";
 
         this.scene.launch("gameover", {
             "minigame": this,
