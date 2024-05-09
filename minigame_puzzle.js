@@ -1,5 +1,15 @@
 import { Scene } from "phaser";
 
+const ALL_PUZZLES = [
+    "puzzle_e0",  "puzzle_e1",
+    "puzzle_eg0", "puzzle_eg1",
+    "puzzle_k0",  "puzzle_k1",
+    "puzzle_g0",
+    "puzzle_j0",
+    "puzzle_bam", "puzzle_death_valley",
+];
+
+
 function shuffleArray(array) {
     let currentIndex = array.length;
 
@@ -73,35 +83,8 @@ export class Game extends Scene
 
     create() {
         window.scene = this;
-        let allpuzzles = [
-            "puzzle_e0", "puzzle_e1",
-            "puzzle_eg0", "puzzle_eg1",
-            "puzzle_k0","puzzle_k1",
-            "puzzle_g0",
-            "puzzle_j0",
-            "puzzle_bam",
-            "puzzle_death_valley"
-        ];
 
-        // Retrieve played puzzles from local storage
-        // This will reset once all puzzles have been solved
-        let playedPuzzles = JSON.parse(localStorage.getItem('playedPuzzles')) || [];
-
-        // Retrieve total solved puzzles ever from local storage
-        // This will never reset
-        let numDonePuzzlesEver = JSON.parse(localStorage.getItem('numDonePuzzlesEver')) || 0;
-        numDonePuzzlesEver = Math.max(numDonePuzzlesEver, playedPuzzles.length);
-
-        // Filter out played puzzles
-        let puzzles = allpuzzles.filter(p => !playedPuzzles.includes(p));
-        if (puzzles.length === 0) {
-            puzzles = allpuzzles;
-            localStorage.setItem('playedPuzzles', JSON.stringify([]));
-        }
-        //console.log(playedPuzzles);
-
-        const puzzle_idx = Math.floor(Math.random() * puzzles.length);
-        this.texture = puzzles[puzzle_idx];
+        this.texture = this.pickPuzzle();
 
         const width = this.game.config.width;
         const height = this.game.config.height;
@@ -203,14 +186,7 @@ export class Game extends Scene
                 // Detect game over.
                 pieces.forEach(p => {
                     if (p.length == pieces.length) {
-                        // Add current puzzle to played puzzles and save to local storage
-                        playedPuzzles.push(this.texture);
-                        localStorage.setItem('playedPuzzles', JSON.stringify(playedPuzzles));
-
-                        numDonePuzzlesEver = Math.max(numDonePuzzlesEver, playedPuzzles.length);
-                        localStorage.setItem('numDonePuzzlesEver', JSON.stringify(numDonePuzzlesEver));
-
-                        this.gameover(allpuzzles.length, numDonePuzzlesEver);
+                        this.gameover();
                     }
                 });
             }, this);
@@ -218,10 +194,39 @@ export class Game extends Scene
             pieces[i] = [item];
         }
 
-        this.intro(allpuzzles.length, numDonePuzzlesEver);
+        this.intro();
     }
 
-    intro(numTot, numDone) {
+    pickPuzzle() {
+        // Retrieve played puzzles from local storage
+        // This will reset once all puzzles have been solved
+        let playedPuzzles = JSON.parse(localStorage.getItem('playedPuzzles')) || [];
+
+        // Filter out played puzzles
+        let puzzles = ALL_PUZZLES.filter(p => !playedPuzzles.includes(p));
+        if (puzzles.length === 0) {
+            puzzles = ALL_PUZZLES;
+            localStorage.setItem('playedPuzzles', JSON.stringify([]));
+        }
+        //console.log(playedPuzzles);
+
+        return puzzles[Math.floor(Math.random() * puzzles.length)];
+    }
+
+    numDonePuzzlesEver() {
+        // Retrieve played puzzles from local storage
+        // This will reset once all puzzles have been solved
+        let playedPuzzles = JSON.parse(localStorage.getItem('playedPuzzles')) || [];
+
+        // Retrieve total solved puzzles ever from local storage
+        // This will never reset
+        let numDonePuzzlesEver = JSON.parse(localStorage.getItem('numDonePuzzlesEver')) || 0;
+        return Math.max(numDonePuzzlesEver, playedPuzzles.length);
+    }
+
+    intro() {
+        let numTot = ALL_PUZZLES.length;
+        let numDone = this.numDonePuzzlesEver();
         let msg = "Klara loves to do puzzles. Especially with some help.\n\nYou have helped Klara solve " + numDone + " out of " + numTot + " puzzles.";
         if (!this.data["restart"]) {
             this.scene.launch("intro", {
@@ -232,9 +237,17 @@ export class Game extends Scene
         }
     }
 
-    gameover(numTot, numDone) {
+    gameover() {
         this.back.visible = false;
 
+        // Add current puzzle to played puzzles and save to local storage
+        let playedPuzzles = JSON.parse(localStorage.getItem('playedPuzzles')) || [];
+        playedPuzzles.push(this.texture);
+        localStorage.setItem('playedPuzzles', JSON.stringify(playedPuzzles));
+        localStorage.setItem('numDonePuzzlesEver', JSON.stringify(this.numDonePuzzlesEver()));
+
+        let numTot = ALL_PUZZLES.length;
+        let numDone = this.numDonePuzzlesEver();
         let msg = numTot > numDone? 
             "You have helped Klara solve " + numDone + " out of " + numTot + " puzzles. Try another!" :
             "You have solved all of Klara's puzzles!";
