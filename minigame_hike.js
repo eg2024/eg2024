@@ -143,6 +143,7 @@ export class Game extends Scene {
             loop: true
         });
 
+        this.seen_friends = false;
         this.intro();
     }
 
@@ -221,6 +222,13 @@ export class Game extends Scene {
         const weights = [100,30,100,100,30,3,3];
     
         let sprite = this.weightedRandom(sprites, weights);
+
+        const visible_score = Math.floor(this.score) * 10;
+        if (!this.seen_friends && visible_score > 2000 && sprite == "hike_rock") {
+            sprite = "hike_friends"
+            this.seen_friends = true;
+        }
+
         const dino = this.add.sprite(this.game.config.width + 50, this.game.config.height * 0.73, sprite);
         dino.setScale(this.game.config.width * 0.15 / dino.width);
 
@@ -230,6 +238,11 @@ export class Game extends Scene {
         dino.is_jumping = false;
         dino.has_started_moving = false;
 
+
+        if (sprite == "hike_friends") {
+            dino.setScale(this.game.config.width * 0.15 / dino.width * 1.50);
+            dino.y -= 20;
+        }
         if (sprite == "hike_tree") {
             dino.setScale(this.game.config.width * 0.15 / dino.width * 2);
             dino.y -= 20;

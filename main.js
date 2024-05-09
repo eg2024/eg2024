@@ -134,6 +134,7 @@ class Preloader extends Phaser.Scene
             "hike_funicular": "hike_funicular.png",
             "hike_pterodactyl": "hike_pterodactyl.png",
             "hike_geometry_dash": "hike_geometry_dash.png",
+            "hike_friends": "hike_friends.png",
 
             // Template level assets
             "template_logo": "template_logo.png",
