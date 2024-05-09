@@ -70,7 +70,7 @@ function getRandomChoice(items) {
 
 function randomLevel() {
     return morseToLevel(getRandomChoice(MORSE_WORDS));
-    
+
     /*
     let t = 2;
     let lvl = [[0,t]];
@@ -367,7 +367,7 @@ export class Game extends Scene
 
     intro() {
         let msg = "Every monday after work Erik goes to the Gym.\n\nHelp him keep pace with his gym buddy Karolis.";
-        let highscore = JSON.parse(localStorage.getItem('highscore_gym')) || 0;
+        let highscore = JSON.parse(localStorage.getItem('highscore_gym2')) || 0;
         if (highscore > 0)
             msg += "\n\nHighscore: " + highscore + " reps";
 
@@ -384,12 +384,12 @@ export class Game extends Scene
         this.back.visible = false;
         this.lvl_text.visible = false;
 
-        let highscore = JSON.parse(localStorage.getItem('highscore_gym')) || 0;
+        let highscore = JSON.parse(localStorage.getItem('highscore_gym2')) || 0;
         let newhighscore = highscore < this.totalscore;
         highscore = Math.max(highscore, this.totalscore);
         if (!(typeof highscore === 'number' && isFinite(highscore) && highscore > 0))
             highscore = 0;
-        localStorage.setItem('highscore_gym', JSON.stringify(highscore));
+        localStorage.setItem('highscore_gym2', JSON.stringify(highscore));
 
         let text = "";
         text = "You got " + this.totalscore + " reps.";
