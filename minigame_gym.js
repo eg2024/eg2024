@@ -372,7 +372,13 @@ export class Game extends Scene
 
         let text = "";
         if (this.total_score == this.best_total_score) {
-
+            this.scene.launch("gameover", {
+                "minigame": this,
+                "image": "gym_perfect",
+                "text": "You got Erik a perfect score. Samuel is proud of him.",
+            });
+            this.scene.pause();
+            return
         }
 
         text = "You lost tempo on level " + (this.level+1) + " out of " + this.levels.length + ". That is " + final_score + "% of the work out."
