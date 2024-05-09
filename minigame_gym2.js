@@ -366,7 +366,7 @@ export class Game extends Scene
     }
 
     intro() {
-        let msg = "Every monday after work Erik goes to the Gym at Google.\n\nHelp him keep pace with Karolis.";
+        let msg = "Every monday after work Erik goes to the Gym.\n\nHelp him keep pace with his gym buddy Karolis.";
         let highscore = JSON.parse(localStorage.getItem('highscore_gym')) || 0;
         if (highscore > 0)
             msg += "\n\nHighscore: " + highscore + " reps";

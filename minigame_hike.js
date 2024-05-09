@@ -360,7 +360,7 @@ export class Game extends Scene {
     }
 
     intro() {
-        let msg = "On weekends, E&G go for adventures. \n\nHelp them jump over obstacles.";
+        let msg = "On weekends, Erik and Gabriela go for adventures. \n\nHelp them jump over obstacles.";
         let highscore = JSON.parse(localStorage.getItem('highscore_hike')) || 0;
         if (highscore > 0)
             msg += "\n\nHighscore: " + highscore + "m";
