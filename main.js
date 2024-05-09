@@ -363,6 +363,7 @@ const config = {
 
         // CHANGE: Add new minigames scenes here.
         template,
+        gym,
         gym2,
         snatch,
         sorting,
