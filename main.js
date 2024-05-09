@@ -186,7 +186,7 @@ class MainMenu extends Phaser.Scene
             obj.setScale(scaling, scaling);
             obj.setInteractive();
             obj.on("pointerdown", function (pointer) {
-                this.scene.start(minigames[i]);
+                this.scene.start(minigames[i], {});
             }, this);
         }
     }
@@ -274,7 +274,7 @@ class GameOver extends Phaser.Scene
         if (this.data["alpha"] != undefined) {
             bg.alpha = this.data["alpha"];
         } else {
-            bg.alpha = 0.8;
+            bg.alpha = 0.9;
         }
 
         let y = 25;
@@ -284,7 +284,7 @@ class GameOver extends Phaser.Scene
             img.setOrigin(0.5, 0);
             y += img.height + 15;
         } else {
-            y = 200;
+            y = 150;
         }
 
         this.add.text(

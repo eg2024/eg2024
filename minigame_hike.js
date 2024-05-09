@@ -10,6 +10,8 @@ export class Game extends Scene {
     }
 
     create() {
+        window.scene = this;
+
         this.mountains = [
             [   0, "Lidingöbron"],
             [ 233, "Mount Inari"],
@@ -55,10 +57,10 @@ export class Game extends Scene {
 
         // Back button
         let back = this.add.image(width - 40, 40, "back").setInteractive();
-        back.on("pointerdown", () => {
+        back.on("pointerdown", function (p) {
             this.scene.start("menu");
             this.scene.stop();
-        });
+        }, this);
         this.back = back;
 
         // Score text
