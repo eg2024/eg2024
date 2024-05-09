@@ -320,7 +320,11 @@ export class Game extends Scene
         localStorage.setItem('highscore_gym', JSON.stringify(highscore));
 
         let text = "";
-        text = "You got " + this.totalscore + " reps. You couldn't keep up with Karolis.";
+        text = "You got " + this.totalscore + " reps.";
+        if (this.level == 0)
+            text += " You couldn't keep up with Karolis.";
+        else
+            text += " Karolis is happy with the session! This was better than usual."; 
         /*
         if (this.level == this.targets.length) {
             text = "Karolis is happy with the session!\n\nThis was better than usual."
