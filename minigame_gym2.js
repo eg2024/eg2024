@@ -5,7 +5,73 @@ const BPM = 90;
 const RED = 0x80000, BLUE = 0x746598, GREY = 0x808080, BLACK = 0x000000, WHITE = 0xffffff;
 const GOOD = 0x4caf4d, BAD = 0xef4337;
 
+// Example: morse('AAS') = '.- .- ...'
+function morse(s) {
+    const morseCode = {
+        'A': '.-',    'B': '-...',  'C': '-.-.',  'D': '-..',
+        'E': '.',     'F': '..-.',  'G': '--.',   'H': '....',
+        'I': '..',    'J': '.---',  'K': '-.-',   'L': '.-..',
+        'M': '--',    'N': '-.',    'O': '---',   'P': '.--.',
+        'Q': '--.-',  'R': '.-.',   'S': '...',   'T': '-',
+        'U': '..-',   'V': '...-',  'W': '.--',   'X': '-..-',
+        'Y': '-.--',  'Z': '--..',
+        '0': '-----', '1': '.----', '2': '..---', '3': '...--',
+        '4': '....-', '5': '.....', '6': '-....', '7': '--...',
+        '8': '---..', '9': '----.'
+    };
+
+    return s.toUpperCase().split('').map(char => morseCode[char] || '').join(' ');
+}
+
+function morseToLevel(string) {
+    let s = morse(string);
+
+    let shortbeat = 0.25; // dot
+    let longbeat = 0.5; // dash
+    let shortbreak = 0.25; // between dots and dashes in a single letter
+    let longbreak = 0.5; // between letters in a single word
+
+    let level = [];
+    let t = 1.5; // the time
+    level.push([0.0,t]); // new bar which starts after delay 2
+    for (let letter of s.split(' ')) {
+        for (let i = 0; i < letter.length; i++) {
+            let symbol = letter[i];
+            let breaktime = (i == letter.length-1? longbreak : shortbreak);
+            let beatttime = symbol == '.'? shortbeat : longbeat;
+            level.push([beatttime,beatttime+breaktime]);
+
+            t += beatttime+breaktime; // time
+        }
+    }
+
+    t -= longbreak; // don't count he last break
+
+    if (t > 8)
+        console.log(["WARNING music for morse code too long", string, t]); // This must be <= 8
+
+    // Adjust last delay so the whole thing has length 8
+    let remainder = 8-t;
+    level[level.length-1][1] = level[level.length-1][0] + remainder;
+
+    level.push([0.0,0.0]); // end level
+
+    return level;
+}
+
+const MORSE_WORDS = ["ERIK", "AAS", "24", "GAB", "NOB", "YES", "KLA", "GG", "WP", "QT"];
+
+function getRandomChoice(items) {
+    // Generate a random index based on the length of the items array
+    const randomIndex = Math.floor(Math.random() * items.length);
+    // Return the item at the random index
+    return items[randomIndex];
+}
+
 function randomLevel() {
+    return morseToLevel(getRandomChoice(MORSE_WORDS));
+    
+    /*
     let t = 2;
     let lvl = [[0,t]];
     while (true) {
@@ -20,6 +86,7 @@ function randomLevel() {
     }
     lvl.push([0,0]);
     return lvl;
+    */
 }
 
 const TARGETS = [
@@ -133,6 +200,11 @@ export class Game extends Scene
     }
 
     create() {
+        // The following will print warnings in the console if there are any morse code words that are too long to fit the music bar
+        for (let i = 0; i < MORSE_WORDS.length; i++) {
+            morseToLevel(MORSE_WORDS[i]);
+        }
+
         window.scene = this;
 
         const width = this.game.config.width;
