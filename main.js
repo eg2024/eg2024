@@ -212,7 +212,7 @@ class Intro extends Phaser.Scene
         bg.alpha = 0.95;
 
         this.add.text(
-            width/8, 200, this.data["text"],
+            width/8, 150, this.data["text"],
             {
                 font: "24px Arial",
                 fill: "#440080",
