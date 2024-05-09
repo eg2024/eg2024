@@ -177,7 +177,7 @@ export class Game extends Scene
             return this.gameover();
         }
 
-        console.log("Next level");
+        //console.log("Next level");
         this.level += 1;
         if (this.level == this.levels.length) {
             return this.gameover();
