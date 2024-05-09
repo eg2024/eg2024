@@ -3,6 +3,7 @@ import * as Phaser from "phaser";
 // CHANGE: Import new minigames here.
 import { Game as template } from "./minigame_template.js";
 import { Game as gym  } from "./minigame_gym.js";
+import { Game as gym2  } from "./minigame_gym2.js";
 import { Game as snatch } from "./minigame_snatch.js";
 import { Game as puzzle } from "./minigame_puzzle.js";
 import { Game as sorting } from "./minigame_sorting.js";
@@ -55,6 +56,7 @@ class Preloader extends Phaser.Scene
 
             // Gym assets
             "gym_logo": "gym_erik_down.png",
+            "gym2_logo": "gym_erik_down.png",
             //"gym_logo": "gym_logo.png",
             "gym_background": "gym_background.png",
             "gym_player_up": "gym_erik_up.png",
@@ -161,7 +163,7 @@ class MainMenu extends Phaser.Scene
         this.add.image(width/2, 20, "main_logo").setOrigin(0.5, 0);
 
         // Render buttons for minigames in a 2x2 grid.
-        let minigames = ["gym", "sorting", "hike", "puzzle"];
+        let minigames = ["gym2", "sorting", "hike", "puzzle"];
 
         const ncols = 2, nrows = 2, size = 145, space = 4;
         const cx = width/2, cy = logo_size + (height - logo_size)/2;
@@ -361,7 +363,7 @@ const config = {
 
         // CHANGE: Add new minigames scenes here.
         template,
-        gym,
+        gym2,
         snatch,
         sorting,
         puzzle,

@@ -198,6 +198,8 @@ export class Game extends Scene
         let besttime = JSON.parse(localStorage.getItem('highscore_sorting')) || 100000;
         let newbesttime = besttime > thistime;
         besttime = Math.min(besttime, thistime);
+        if (!(typeof besttime === 'number' && isFinite(besttime) && besttime > 0))
+            besttime = 100000;
         localStorage.setItem('highscore_sorting', JSON.stringify(besttime));
 
         let text = "Gabriela thanks you. This was much easier with your help.\n\nYou sorted " + this.score + " items in " + thistime + "s.";

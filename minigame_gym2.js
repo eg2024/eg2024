@@ -5,18 +5,31 @@ const BPM = 90;
 const RED = 0x80000, BLUE = 0x746598, GREY = 0x808080, BLACK = 0x000000, WHITE = 0xffffff;
 const GOOD = 0x4caf4d, BAD = 0xef4337;
 
+function randomLevel() {
+    let t = 2;
+    let lvl = [[0,t]];
+    while (true) {
+        let beat = 0.2 + Math.random()*(2-0.2);
+        let delay = 0.2 + Math.random()*(2-0.2);
+        if (t+beat <= 8.0) {
+            lvl.push([beat,beat+delay]);
+            t += beat+delay;
+        }
+        else
+            break;
+    }
+    lvl.push([0,0]);
+    return lvl;
+}
+
 const TARGETS = [
     [
         [0.0, 2.0], [1.0, 2.0], [1.0, 2.0], [1.0, 2.0],
+        [0.0, 0.0],
         [0.0, 2.0], [1.0, 2.0], [1.0, 2.0], [1.0, 2.0],
         [0.0, 0.0],
-    ],
-    [
         [0.0, 2.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0],
         [0.0, 2.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0],
-        [0.0, 0.0],
-    ],
-    [
         [0.0, 2.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0],
         [0.0, 2.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0],
         [0.0, 0.0],
@@ -67,7 +80,7 @@ function clock2music(ms) {
 export class Game extends Scene
 {
     constructor() {
-        super("gym");
+        super("gym2");
     }
 
     init(data) {
@@ -75,7 +88,7 @@ export class Game extends Scene
     }
 
     setupLevel() {
-        this.target = makeRecord(TARGETS[this.level % TARGETS.length]);
+        this.target = makeRecord(this.targets[this.level % this.targets.length]);
         let track_len = this.target[this.target.length - 1][1];
         this.timer.delay = music2clock(track_len);
 
@@ -99,15 +112,23 @@ export class Game extends Scene
 
         console.log("Next level");
         this.level += 1;
-        if (this.level == TARGETS.length) {
-            return this.gameover();
+        this.targets.push(randomLevel());
+        for (let i = 0; i < 9; i++) {
+            for (let beat of randomLevel())
+                this.targets[this.targets.length-1].push(beat);
         }
+
+
         this.setupLevel();
     }
 
     updateScore() {
-        this.lvl_text.setText("Lvl " + (this.level + 1));
-        this.text.setText("" + this.score + "/" + this.num_beats);
+        let remainingtime = (this.timer.delay/1000 - this.timer.getElapsedSeconds()).toFixed(1) + "s";
+        if (this.level > 0)
+            remainingtime += "\nOvertime!";
+
+        this.lvl_text.setText(remainingtime);
+        this.text.setText("" + this.totalscore);
 
     }
 
@@ -154,6 +175,15 @@ export class Game extends Scene
             align: "center"
         }).setOrigin(0.5, 0.5);
 
+        this.targets = JSON.parse(JSON.stringify(TARGETS)); // deep copy
+        for (let i = 0; i < 4; i++) {
+            for (let beat of randomLevel())
+                this.targets[0].push(beat);
+        }
+
+        this.score = 0;
+        this.totalscore = 0;
+
         // Add characters.
         this.player = this.add.sprite(width*3/4, height*3.3/5, "gym_player_down");
         this.buddy = this.add.sprite(width*1/4, height*3.3/5, "gym_buddy_down");
@@ -182,6 +212,7 @@ export class Game extends Scene
                 if (matchBeat(this.target, beat)) {
                     beat[2] = GOOD;
                     this.score += 1;
+                    this.totalscore += 1;
                     this.updateScore();
                 } else {
                     beat[2] = BAD;
@@ -243,6 +274,8 @@ export class Game extends Scene
         } else {
             this.buddy.setTexture("gym_buddy_down"); 
         }
+
+        this.updateScore();
     }
 
     drawRecord(graphics, record, y, t, t2x, r) {
@@ -277,20 +310,23 @@ export class Game extends Scene
 
     gameover() {
         this.back.visible = false;
+        this.lvl_text.visible = false;
 
         let highscore = JSON.parse(localStorage.getItem('highscore_gym')) || 0;
-        let newhighscore = highscore < this.score;
-        highscore = Math.max(highscore, this.score);
+        let newhighscore = highscore < this.totalscore;
+        highscore = Math.max(highscore, this.totalscore);
         if (!(typeof highscore === 'number' && isFinite(highscore) && highscore > 0))
             highscore = 0;
         localStorage.setItem('highscore_gym', JSON.stringify(highscore));
 
         let text = "";
-        if (this.level == TARGETS.length) {
+        text = "You got " + this.totalscore + " reps. You couldn't keep up with Karolis.";
+        /*
+        if (this.level == this.targets.length) {
             text = "Karolis is happy with the session!\n\nThis was better than usual."
         } else {
-            text = "You have to pace your lift. You got " + this.score + "/" + this.num_beats + " reps.\n\nYou reached level " + (this.level+1) + "/" + TARGETS.length + ".";
-        }
+            text = "You have to pace your lift. You got " + this.score + "/" + this.num_beats + " reps.\n\nYou reached level " + (this.level+1) + "/" + this.targets.length + ".";
+        }*/
 
         if (newhighscore)
             text += "\n\nNEW HIGHSCORE!"
