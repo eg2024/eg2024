@@ -37,6 +37,7 @@ class Preloader extends Phaser.Scene
         let images = {
             // Main menu assets
             "main_logo": "main_logo.png",
+            "main_logo_extra": "main_logo_extra.png",
             //"back": "back3.png",
             "back": "back4.png",
             "heart_full": "heart_full.png",
@@ -154,19 +155,19 @@ class MainMenu extends Phaser.Scene
     }
 
     create() {
+        window.scene = this;
         this.cameras.main.setBackgroundColor(0xffffff);
 
         const width = this.game.config.width;
         const height = this.game.config.height;
         const logo_size = 200;
 
-        this.add.image(width/2, 20, "main_logo").setOrigin(0.5, 0);
 
         // Render buttons for minigames in a 2x2 grid.
         let minigames = ["gym2", "sorting", "hike", "puzzle"];
 
         const ncols = 2, nrows = 2, size = 145, space = 4;
-        const cx = width/2, cy = logo_size + (height - logo_size)/2;
+        const cx = width/2, cy = logo_size + (height - logo_size)/2 + 30;
         const sx = cx - (ncols*size + (ncols-1)*space)/2 + size/2;
         const sy = cy - (nrows*size + (nrows-1)*space)/2 + size/2;
         const dd = size + space;
@@ -189,6 +190,22 @@ class MainMenu extends Phaser.Scene
                 this.scene.start(minigames[i], {});
             }, this);
         }
+
+        const logo = this.add.image(width/2, -40, "main_logo").setOrigin(0.5, 0);
+
+        let blink = 0;
+        this.timer = this.time.addEvent({
+            "delay": 500, "loop": true,
+            "callback": () => {
+                if (blink > 0) blink--;
+                if (blink % 2)
+                    logo.setTexture("main_logo_extra");
+                else
+                    logo.setTexture("main_logo");
+            },
+        });
+        logo.setInteractive({pixelPerfect: true})
+        logo.on("pointerdown", () => { blink = 10; });
     }
 }
 
