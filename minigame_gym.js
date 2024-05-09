@@ -5,7 +5,7 @@ const BPM = 90;
 const RED = 0x80000, BLUE = 0x746598, GREY = 0x808080, BLACK = 0x000000, WHITE = 0xffffff;
 const GOOD = 0x4caf4d, BAD = 0xef4337;
 
-const TARGETS = [
+const LEVELS = [
     [
         [0.0, 2.0], [1.0, 2.0], [1.0, 2.0], [1.0, 2.0],
         [0.0, 2.0], [1.0, 2.0], [1.0, 2.0], [1.0, 2.0],
@@ -22,6 +22,69 @@ const TARGETS = [
         [0.0, 0.0],
     ],
 ];
+
+// Example: morse('AAS') = '.- .- ...'
+function morse(s) {
+    const morseCode = {
+        'A': '.-',    'B': '-...',  'C': '-.-.',  'D': '-..',
+        'E': '.',     'F': '..-.',  'G': '--.',   'H': '....',
+        'I': '..',    'J': '.---',  'K': '-.-',   'L': '.-..',
+        'M': '--',    'N': '-.',    'O': '---',   'P': '.--.',
+        'Q': '--.-',  'R': '.-.',   'S': '...',   'T': '-',
+        'U': '..-',   'V': '...-',  'W': '.--',   'X': '-..-',
+        'Y': '-.--',  'Z': '--..',
+        '0': '-----', '1': '.----', '2': '..---', '3': '...--',
+        '4': '....-', '5': '.....', '6': '-....', '7': '--...',
+        '8': '---..', '9': '----.'
+    };
+
+    return s.toUpperCase().split('').map(char => morseCode[char] || '').join(' ');
+}
+
+function morseToLevel(string) {
+    let s = morse(string);
+
+    let shortbeat = 0.25; // dot
+    let longbeat = 0.5; // dash
+    let shortbreak = 0.25; // between dots and dashes in a single letter
+    let longbreak = 0.5; // between letters in a single word
+
+    let level = [];
+    let t = 1.5; // the time
+    level.push([0.0,t]); // new bar which starts after delay 2
+    for (let letter of s.split(' ')) {
+        for (let i = 0; i < letter.length; i++) {
+            let symbol = letter[i];
+            let breaktime = (i == letter.length-1? longbreak : shortbreak);
+            let beatttime = symbol == '.'? shortbeat : longbeat;
+            level.push([beatttime,beatttime+breaktime]);
+
+            t += beatttime+breaktime; // time
+        }
+    }
+
+    t -= longbreak; // don't count he last break
+
+    if (t > 8)
+        console.log(["WARNING music for morse code too long", string, t]); // This must be <= 8
+
+    // Adjust last delay so the whole thing has length 8
+    let remainder = 8-t;
+    level[level.length-1][1] = level[level.length-1][0] + remainder;
+
+    level.push([0.0,0.0]); // end level
+
+    return level;
+}
+
+const MORSE_WORDS = ["ERIK", "AAS", "24", "GAB", "NOB", "YES", "KLA", "GG", "WP", "QT"];
+
+function getRandomChoice(items) {
+    // Generate a random index based on the length of the items array
+    const randomIndex = Math.floor(Math.random() * items.length);
+    // Return the item at the random index
+    return items[randomIndex];
+}
 
 
 function makeRecord(data) {
@@ -54,6 +117,14 @@ function matchBeat(record, beat) {
     return false;
 }
 
+function countBeats(record) {
+    let num_beats = 0;
+    for (let i=0; i!=record.length; i++) {
+        let [x1, x2, color] = record[i];
+        if (x1 != x2) num_beats += 1;
+    }
+    return num_beats;
+}
 
 function music2clock(x) {
     return x*60*1000/BPM;  // ms
@@ -72,22 +143,31 @@ export class Game extends Scene
 
     init(data) {
         this.data = data;
+        this.levels = [];
+
+        for (let i=0; i!=LEVELS.length; i++) {
+            this.levels.push(LEVELS[i]);
+        }
+
+        for (let i=0; i!=2; i++) {
+            let lvl = [];
+            for (let beat of morseToLevel(getRandomChoice(MORSE_WORDS))) lvl.push(beat);
+            for (let beat of morseToLevel(getRandomChoice(MORSE_WORDS))) lvl.push(beat);
+            this.levels.push(lvl);
+        }
+
+        this.best_total_score = 0;
+        for (let i=0; i!=this.levels.length; i++) {
+            this.best_total_score += countBeats(this.levels[i]);
+        }
     }
 
     setupLevel() {
-        this.target = makeRecord(TARGETS[this.level % TARGETS.length]);
+        this.target = makeRecord(this.levels[this.level % this.levels.length]);
         let track_len = this.target[this.target.length - 1][1];
         this.timer.delay = music2clock(track_len);
-
-        let record = this.target;
-        let num_beats = 0;
-        for (let i=0; i!=record.length; i++) {
-            let [x1, x2, color] = record[i];
-            if (x1 != x2) num_beats += 1;
-        }
-
+        this.num_beats = countBeats(this.target);
         this.record = [];
-        this.num_beats = num_beats;
         this.score = 0;
         this.updateScore();
     }
@@ -99,7 +179,7 @@ export class Game extends Scene
 
         console.log("Next level");
         this.level += 1;
-        if (this.level == TARGETS.length) {
+        if (this.level == this.levels.length) {
             return this.gameover();
         }
         this.setupLevel();
@@ -182,6 +262,7 @@ export class Game extends Scene
                 if (matchBeat(this.target, beat)) {
                     beat[2] = GOOD;
                     this.score += 1;
+                    this.total_score += 1;
                     this.updateScore();
                 } else {
                     beat[2] = BAD;
@@ -190,6 +271,8 @@ export class Game extends Scene
         }, this);
 
         this.level = 0;
+        this.total_score = 0;
+        this.max_total_score = 0;
         this.setupLevel();
 
         this.intro();
@@ -260,11 +343,12 @@ export class Game extends Scene
         }
     }
 
+
     intro() {
         let msg = "Every monday after work Erik goes to the Gym.\n\nHelp him keep pace with his gym buddy Karolis.";
         let highscore = JSON.parse(localStorage.getItem('highscore_gym')) || 0;
         if (highscore > 0)
-            msg += "\n\nHighscore: " + highscore + " reps";
+            msg += "\n\nHighscore: " + Math.floor(highscore) + "%";
 
         if (!this.data["restart"]) {
             this.scene.launch("intro", {
@@ -278,24 +362,26 @@ export class Game extends Scene
     gameover() {
         this.back.visible = false;
 
+        let final_score = Math.floor(this.total_score / this.best_total_score * 100);
         let highscore = JSON.parse(localStorage.getItem('highscore_gym')) || 0;
-        let newhighscore = highscore < this.score;
-        highscore = Math.max(highscore, this.score);
+        let newhighscore = highscore < final_score;
+        highscore = Math.max(highscore, final_score);
         if (!(typeof highscore === 'number' && isFinite(highscore) && highscore > 0))
             highscore = 0;
         localStorage.setItem('highscore_gym', JSON.stringify(highscore));
 
         let text = "";
-        if (this.level == TARGETS.length) {
-            text = "Karolis is happy with the session!\n\nThis was better than usual."
-        } else {
-            text = "You have to pace your lift. You got " + this.score + "/" + this.num_beats + " reps.\n\nYou reached level " + (this.level+1) + "/" + TARGETS.length + ".";
+        if (this.total_score == this.best_total_score) {
+
         }
 
-        if (newhighscore)
-            text += "\n\nNEW HIGHSCORE!"
-        else
-            text += "\n\nHighscore: " + highscore + " reps";
+        text = "You lost tempo on level " + (this.level+1) + " out of " + this.levels.length + ". That is " + final_score + "% of the work out."
+
+        if (newhighscore) {
+            text += "\n\nNEW HIGHSCORE!";
+        } else {
+            text += "\n\nHighscore: " + Math.floor(highscore) + "%";
+        }
 
         this.scene.launch("gameover", {
             "minigame": this,

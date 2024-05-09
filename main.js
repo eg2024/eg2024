@@ -164,7 +164,7 @@ class MainMenu extends Phaser.Scene
 
 
         // Render buttons for minigames in a 2x2 grid.
-        let minigames = ["gym2", "sorting", "hike", "puzzle"];
+        let minigames = ["gym", "sorting", "hike", "puzzle"];
 
         const ncols = 2, nrows = 2, size = 145, space = 4;
         const cx = width/2, cy = logo_size + (height - logo_size)/2 + 30;
