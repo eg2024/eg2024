@@ -6,21 +6,12 @@ const RED = 0x80000, BLUE = 0x746598, GREY = 0x808080, BLACK = 0x000000, WHITE =
 const GOOD = 0x4caf4d, BAD = 0xef4337;
 
 const LEVELS = [
-    [
-        [0.0, 2.0], [1.0, 2.0], [1.0, 2.0], [1.0, 2.0],
-        [0.0, 2.0], [1.0, 2.0], [1.0, 2.0], [1.0, 2.0],
-        [0.0, 0.0],
-    ],
-    [
-        [0.0, 2.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0],
-        [0.0, 2.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0],
-        [0.0, 0.0],
-    ],
-    [
-        [0.0, 2.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0],
-        [0.0, 2.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0],
-        [0.0, 0.0],
-    ],
+    [[0.0, 2.0], [1.0, 2.0], [1.0, 2.0], [1.0, 2.0], [0.0, 0.0],],
+    //[[0.0, 2.0], [1.0, 2.0], [1.0, 2.0], [1.0, 2.0], [0.0, 0.0],],
+    [[0.0, 2.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.0, 0.0],],
+    //[[0.0, 2.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.5, 1.0], [0.0, 0.0],],
+    [[0.0, 2.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.0, 0.0],],
+    //[[0.0, 2.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.25, 0.5], [0.25, 0.5], [0.50, 1.0], [0.0, 0.0],],
 ];
 
 // Example: morse('AAS') = '.- .- ...'
@@ -110,9 +101,15 @@ function matchBeat(record, beat) {
     const delta = 0.15;  // Tolerance
     for (let i=0; i<record.length; i++) {
         let [a1, a2, color] = record[i];
-        if ((Math.abs(a1-x1) < delta) && (Math.abs(a2-x2) < delta)) {
+        let s_off = Math.abs(a1-x1);
+        let d_off = Math.abs((a2-a1) - (x2-x1));
+        // It is hard to be on time when screen lags on phones, be more tolerant
+        // with start but less with duration.
+        if (s_off < 0.2 && d_off < 0.15)
             return true;
-        }
+        //if ((Math.abs(a1-x1) < delta) && (Math.abs(a2-x2) < delta)) {
+        //    return true;
+        //}
     }
     return false;
 }
@@ -149,16 +146,11 @@ export class Game extends Scene
             this.levels.push(LEVELS[i]);
         }
 
-        for (let i=0; i!=2; i++) {
+        for (let i=0; i!=7; i++) {
             let lvl = [];
-            for (let beat of morseToLevel(getRandomChoice(MORSE_WORDS))) lvl.push(beat);
-            for (let beat of morseToLevel(getRandomChoice(MORSE_WORDS))) lvl.push(beat);
+            for (let beat of morseToLevel(getRandomChoice(MORSE_WORDS)))
+                lvl.push(beat);
             this.levels.push(lvl);
-        }
-
-        this.best_total_score = 0;
-        for (let i=0; i!=this.levels.length; i++) {
-            this.best_total_score += countBeats(this.levels[i]);
         }
     }
 
@@ -176,12 +168,11 @@ export class Game extends Scene
         if (this.num_beats != this.score) {
             return this.gameover();
         }
-
-        //console.log("Next level");
-        this.level += 1;
-        if (this.level == this.levels.length) {
+        if (this.level+1 == this.levels.length) {
             return this.gameover();
         }
+
+        this.level += 1;
         this.setupLevel();
     }
 
@@ -272,7 +263,6 @@ export class Game extends Scene
 
         this.level = 0;
         this.total_score = 0;
-        this.max_total_score = 0;
         this.setupLevel();
 
         this.intro();
@@ -362,7 +352,8 @@ export class Game extends Scene
     gameover() {
         this.back.visible = false;
 
-        let final_score = Math.floor(this.total_score / this.best_total_score * 100);
+        let lvl_percent = 100 / this.levels.length;
+        let final_score = this.level * lvl_percent + (this.score / this.num_beats)*lvl_percent;
         let highscore = JSON.parse(localStorage.getItem('highscore_gym')) || 0;
         let newhighscore = highscore < final_score;
         highscore = Math.max(highscore, final_score);
@@ -371,7 +362,7 @@ export class Game extends Scene
         localStorage.setItem('highscore_gym', JSON.stringify(highscore));
 
         let text = "";
-        if (this.total_score == this.best_total_score) {
+        if (final_score >= 100.0) {
             this.scene.launch("gameover", {
                 "minigame": this,
                 "image": "gym_perfect",
@@ -381,7 +372,7 @@ export class Game extends Scene
             return
         }
 
-        text = "You lost tempo on level " + (this.level+1) + " out of " + this.levels.length + ". That is " + final_score + "% of the work out."
+        text = "You lost tempo on level " + (this.level+1) + " out of " + this.levels.length + ". That is " + Math.floor(final_score) + "% of the work out."
 
         if (newhighscore) {
             text += "\n\nNEW HIGHSCORE!";
